@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wizard Financeiro Personalizado</title>
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --bg: #f4f7f6;
+            --dark: #2c3e50;
+            --text: #34495e;
+            --white: #ffffff;
+            --danger: #e74c3c;
+            --info: #3498db;
+            --warning: #f1c40f;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); color: var(--text); display: flex; justify-content: center; min-height: 100vh; margin: 0; padding: 15px; }
+
+        .container { background: var(--white); width: 100%; max-width: 500px; padding: 25px; border-radius: 28px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); align-self: center; position: relative; }
+
+        .step { display: none; animation: fadeIn 0.4s ease; }
+        .step.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        h1 { font-size: 24px; color: var(--dark); margin-bottom: 8px; text-align: center; }
+        .subtitle { font-size: 14px; color: #7f8c8d; margin-bottom: 25px; text-align: center; display: block; }
+
+        input, select { width: 100%; padding: 14px; border: 2px solid #f1f2f6; border-radius: 12px; font-size: 16px; margin-bottom: 12px; outline: none; background: #f9f9f9; }
+        input:focus { border-color: var(--primary); background: white; }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        button { flex: 1; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 15px; }
+        .btn-next { background: var(--primary); color: white; }
+        .btn-back { background: #eee; color: #7f8c8d; }
+        .btn-add { background: var(--dark); color: white; margin-bottom: 15px; width: 100%; }
+
+        /* Dashboard de Início */
+        .main-panel { background: var(--dark); color: white; padding: 20px; border-radius: 20px; margin-bottom: 20px; text-align: center; }
+        .main-panel .income-val { font-size: 32px; font-weight: 900; margin: 10px 0; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .stat-box { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; font-size: 12px; }
+        .stat-box b { display: block; font-size: 16px; }
+
+        /* Configuração de Categorias */
+        .rule-item { background: #f9f9f9; padding: 15px; border-radius: 15px; margin-bottom: 10px; border-left: 5px solid var(--primary); }
+        .rule-row { display: flex; gap: 10px; align-items: center; }
+        .rule-row input { margin-bottom: 0; }
+
+        /* Sugestões de Nomes */
+        .suggestions { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; }
+        .sug-tag { background: #eee; padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
+        .sug-tag:hover { background: #ddd; }
+
+        /* Lista de Gastos */
+        .category-item { background: #fff; border: 1px solid #eee; padding: 12px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Dashboard de Análise */
+        .summary-card { padding: 18px; border-radius: 20px; margin-bottom: 12px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
+        .summary-card.over-limit { border-color: var(--danger); background: #fff0f0 !important; color: var(--danger) !important; animation: shake 0.5s; }
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
+        .card-header { display: flex; justify-content: space-between; font-size: 11px; text-transform: uppercase; font-weight: 800; }
+        .card-val { font-size: 20px; font-weight: 900; margin: 5px 0; }
+        .instruction { font-size: 12px; font-weight: bold; margin-top: 5px; display: none; }
+        .over-limit .instruction { display: block; }
+
+        /* Modal Confirmação */
+        #confirmOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+        .confirm-card { background: white; padding: 25px; border-radius: 24px; width: 100%; max-width: 350px; text-align: center; }
+        
+        #detailPanel { display: none; margin-top: 15px; padding: 15px; background: #fff; border: 2px solid #f1f2f6; border-radius: 18px; }
+    </style>
+</head>
+<body>
+
+<div id="confirmOverlay">
+    <div class="confirm-card">
+        <h3>Confirmar Exclusão?</h3>
+        <p id="confirmText" style="font-size: 14px; color: #666;">Deseja remover este item?</p>
+        <div class="btn-group">
+            <button class="btn-back" onclick="closeConfirm()">Cancelar</button>
+            <button class="btn-next" id="btnDoDelete" style="background: var(--danger);">Excluir</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    
+    <div class="step active" id="step0">
+        <h1>Meu Painel</h1>
+        <span class="subtitle">Resumo Geral Financeiro</span>
+        
+        <div class="main-panel">
+            <small>RENDA MENSAL DISPONÍVEL</small>
+            <div class="income-val" id="dashIncome">R$ 0,00</div>
+            <div class="stats-grid">
+                <div class="stat-box">Gasto Total<b id="dashSpent">R$ 0,00</b></div>
+                <div class="stat-box">Saldo Livre<b id="dashBalance">R$ 0,00</b></div>
+            </div>
+        </div>
+
+        <button class="btn-next" onclick="nextStep(1)">Configurar Plano & Renda</button>
+        <button class="btn-next" style="background: var(--dark); margin-top: 10px;" onclick="nextStep(3)">Gerenciar Gastos</button>
+        <button class="btn-next" style="background: var(--info); margin-top: 10px;" onclick="nextStep(4)">Análise de Cortes</button>
+    </div>
+
+    <div class="step" id="step1">
+        <h1>Configurações</h1>
+        <span class="subtitle">Defina sua renda e suas metas (%)</span>
+        
+        <label style="font-size: 12px; font-weight: bold;">Sua Renda Líquida</label>
+        <input type="number" id="income" placeholder="Ex: 5000" oninput="saveIncome()">
+
+        <div id="rulesList"></div>
+        <button class="btn-add" onclick="addRule()">+ Nova Categoria de Meta</button>
+        
+        <div id="percWarning" style="color: var(--danger); font-size: 11px; text-align: center; margin-bottom: 10px; display: none;">
+            Atenção: A soma das porcentagens deve ser 100%!
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-back" onclick="prevStep(0)">Início</button>
+            <button class="btn-next" onclick="nextStep(3)">Continuar</button>
+        </div>
+    </div>
+
+    <div class="step" id="step3">
+        <h1>Registrar Gastos</h1>
+        <span class="subtitle">O que você gastou este mês?</span>
+        
+        <div class="suggestions" id="nameSuggestions">
+            <div class="sug-tag" onclick="setExpName('Aluguel')">Aluguel</div>
+            <div class="sug-tag" onclick="setExpName('Mercado')">Mercado</div>
+            <div class="sug-tag" onclick="setExpName('Netflix')">Netflix</div>
+            <div class="sug-tag" onclick="setExpName('Reserva')">Reserva</div>
+            <div class="sug-tag" onclick="setExpName('Lazer')">Lazer</div>
+            <div class="sug-tag" onclick="setExpName('Saúde')">Saúde</div>
+        </div>
+
+        <input type="text" id="expName" placeholder="Nome do Gasto">
+        <input type="number" id="expVal" placeholder="Valor R$">
+        <select id="expRule"></select>
+        
+        <button class="btn-add" onclick="addExpense()">+ Adicionar Gasto</button>
+
+        <div id="expenseList"></div>
+
+        <div class="btn-group">
+            <button class="btn-back" onclick="prevStep(0)">Início</button>
+            <button class="btn-next" onclick="nextStep(4)">Analisar Plano</button>
+        </div>
+    </div>
+
+    <div class="step" id="step4">
+        <h1>Onde Diminuir?</h1>
+        <span class="subtitle">Clique nas categorias em vermelho para agir.</span>
+
+        <div id="analysisDashboard"></div>
+
+        <div id="detailPanel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <b id="detailTitle" style="font-size: 14px;">Itens</b>
+                <button onclick="closeDetails()" style="width: auto; padding: 4px 8px; font-size: 10px;">Fechar</button>
+            </div>
+            <div id="detailList"></div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-back" onclick="prevStep(0)">Início</button>
+            <button class="btn-next" onclick="saveAll()">Salvar Plano</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let income = 0;
+    let rules = [
+        { id: 1, name: "Essencial", perc: 70, color: "#e1f5fe" },
+        { id: 2, name: "Metas/Dívidas", perc: 20, color: "#fff9c4" },
+        { id: 3, name: "Estilo de Vida", perc: 10, color: "#e8f5e9" }
+    ];
+    let expenses = [];
+    let pendingDeleteId = null;
+    let deleteType = null; 
+
+    function nextStep(step) { changeStep(step); }
+    function prevStep(step) { changeStep(step); }
+
+    function changeStep(step) {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById(`step${step}`).classList.add('active');
+        updateUI();
+    }
+
+    function renderRules() {
+        const list = document.getElementById('rulesList');
+        list.innerHTML = '';
+        rules.forEach((r, idx) => {
+            list.innerHTML += `
+                <div class="rule-item">
+                    <div class="rule-row">
+                        <input type="text" value="${r.name}" onchange="updateRule(${idx}, 'name', this.value)" style="flex:2">
+                        <input type="number" value="${r.perc}" onchange="updateRule(${idx}, 'perc', this.value)" style="flex:1">
+                        <span style="font-weight:bold">%</span>
+                        <button onclick="askDeleteRule(${idx}, '${r.name}')" style="flex:0; background:none; color:var(--danger); padding:0; font-size: 20px;">×</button>
+                    </div>
+                </div>`;
+        });
+        updateRuleSelect();
+    }
+
+    function addRule() {
+        rules.push({ id: Date.now(), name: "Nova", perc: 0, color: "#f1f2f6" });
+        renderRules();
+    }
+
+    function updateRule(idx, field, val) {
+        rules[idx][field] = field === 'perc' ? parseFloat(val) : val;
+        checkPerc();
+        updateUI();
+    }
+
+    function closeConfirm() { 
+        document.getElementById('confirmOverlay').style.display = 'none'; 
+        pendingDeleteId = null;
+        deleteType = null;
+    }
+
+    function askDeleteRule(idx, text) {
+        pendingDeleteId = idx;
+        deleteType = 'rule';
+        document.getElementById('confirmText').innerText = `Deseja excluir a categoria "${text}"?`;
+        document.getElementById('confirmOverlay').style.display = 'flex';
+        document.getElementById('btnDoDelete').onclick = () => executeDelete();
+    }
+
+    function askDeleteExpense(id, text) {
+        pendingDeleteId = id;
+        deleteType = 'expense';
+        document.getElementById('confirmText').innerText = `Deseja excluir o gasto "${text}"?`;
+        document.getElementById('confirmOverlay').style.display = 'flex';
+        document.getElementById('btnDoDelete').onclick = () => executeDelete();
+    }
+
+    function executeDelete() {
+        if (deleteType === 'rule') {
+            rules.splice(pendingDeleteId, 1);
+            renderRules();
+        } else if (deleteType === 'expense') {
+            expenses = expenses.filter(e => e.id !== pendingDeleteId);
+            renderExpenses();
+            if(document.getElementById('detailPanel').style.display === 'block') {
+                showDetails(lastOpenedRuleId);
+            }
+        }
+        updateUI();
+        closeConfirm();
+    }
+
+    function checkPerc() {
+        const total = rules.reduce((sum, r) => sum + r.perc, 0);
+        document.getElementById('percWarning').style.display = total !== 100 ? 'block' : 'none';
+    }
+
+    function updateRuleSelect() {
+        const sel = document.getElementById('expRule');
+        if(sel) sel.innerHTML = rules.map(r => `<option value="${r.id}">${r.name} (${r.perc}%)</option>`).join('');
+    }
+
+    function setExpName(name) { document.getElementById('expName').value = name; }
+
+    function addExpense() {
+        const name = document.getElementById('expName').value;
+        const val = parseFloat(document.getElementById('expVal').value);
+        const ruleId = document.getElementById('expRule').value;
+        if(!name || !val) return;
+        expenses.push({ id: Date.now(), name, val, ruleId: parseInt(ruleId) });
+        document.getElementById('expName').value = '';
+        document.getElementById('expVal').value = '';
+        renderExpenses();
+        updateUI();
+    }
+
+    function renderExpenses() {
+        const list = document.getElementById('expenseList');
+        if(!list) return;
+        list.innerHTML = expenses.map(e => {
+            const rule = rules.find(r => r.id === e.ruleId);
+            return `<div class="category-item">
+                <div><b>${e.name}</b><br><small>${rule ? rule.name : 'Outros'}</small></div>
+                <div><b>R$ ${e.val.toFixed(2)}</b> <button onclick="askDeleteExpense(${e.id}, '${e.name}')" style="background:none; color:var(--danger); padding:5px; font-size:18px;">×</button></div>
+            </div>`;
+        }).join('');
+    }
+
+    let lastOpenedRuleId = null;
+    function updateUI() {
+        income = parseFloat(document.getElementById('income').value) || 0;
+        const totalSpent = expenses.reduce((sum, e) => sum + e.val, 0);
+        
+        document.getElementById('dashIncome').innerText = income.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+        document.getElementById('dashSpent').innerText = totalSpent.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+        document.getElementById('dashBalance').innerText = (income - totalSpent).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+
+        const dash = document.getElementById('analysisDashboard');
+        if(!dash) return;
+        dash.innerHTML = '';
+        
+        rules.forEach(r => {
+            const limit = income * (r.perc / 100);
+            const spent = expenses.filter(e => e.ruleId === r.id).reduce((sum, e) => sum + e.val, 0);
+            const isOver = spent > limit;
+            
+            dash.innerHTML += `
+                <div class="summary-card ${isOver ? 'over-limit' : ''}" style="background: ${r.color || '#f1f2f6'}" onclick="showDetails(${r.id})">
+                    <div class="card-header"><span>${r.name} (${r.perc}%)</span> <span>Limite: R$ ${limit.toFixed(2)}</span></div>
+                    <div class="card-val">Gasto: R$ ${spent.toFixed(2)}</div>
+                    <div class="instruction">🔴 Atenção: Corte gastos nesta categoria!</div>
+                </div>`;
+        });
+    }
+
+    function showDetails(ruleId) {
+        lastOpenedRuleId = ruleId;
+        const panel = document.getElementById('detailPanel');
+        const list = document.getElementById('detailList');
+        const rule = rules.find(r => r.id === ruleId);
+        if(!rule) return closeDetails();
+        
+        const filtered = expenses.filter(e => e.ruleId === ruleId);
+
+        panel.style.display = 'block';
+        document.getElementById('detailTitle').innerText = `Itens em ${rule.name}`;
+        list.innerHTML = filtered.map(e => `
+            <div class="detail-item" style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee; font-size:13px">
+                <span>${e.name}</span>
+                <div><b>R$ ${e.val.toFixed(2)}</b> <button onclick="askDeleteExpense(${e.id}, '${e.name}')" style="background:none; color:var(--danger); padding:0 5px; font-size:16px">×</button></div>
+            </div>
+        `).join('') || '<p style="font-size:12px; color:#999">Vazio.</p>';
+        panel.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeDetails() { document.getElementById('detailPanel').style.display = 'none'; }
+
+    function saveIncome() { income = parseFloat(document.getElementById('income').value) || 0; updateUI(); }
+    
+    function saveAll() {
+        localStorage.setItem('wizardProData', JSON.stringify({ income, rules, expenses }));
+        alert("Plano salvo com sucesso!");
+        nextStep(0);
+    }
+
+    window.onload = () => {
+        const saved = JSON.parse(localStorage.getItem('wizardProData'));
+        if(saved) {
+            income = saved.income;
+            rules = saved.rules;
+            expenses = saved.expenses;
+            document.getElementById('income').value = income;
+        }
+        renderRules();
+        renderExpenses();
+        updateUI();
+    };
+</script>
+</body>
+</html>
