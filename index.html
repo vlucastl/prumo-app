@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wizard Financeiro Personalizado</title>
+    <title>Prumo - Wizard Financeiro</title>
     <style>
         :root {
             --primary: #2ecc71;
@@ -14,6 +14,7 @@
             --danger: #e74c3c;
             --info: #3498db;
             --warning: #f1c40f;
+            --success: #27ae60;
         }
 
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -26,7 +27,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         h1 { font-size: 24px; color: var(--dark); margin-bottom: 8px; text-align: center; }
-        .subtitle { font-size: 14px; color: #7f8c8d; margin-bottom: 25px; text-align: center; display: block; }
+        .subtitle { font-size: 14px; color: #7f8c8d; margin-bottom: 15px; text-align: center; display: block; }
 
         input, select { width: 100%; padding: 14px; border: 2px solid #f1f2f6; border-radius: 12px; font-size: 16px; margin-bottom: 12px; outline: none; background: #f9f9f9; }
         input:focus { border-color: var(--primary); background: white; }
@@ -63,7 +64,8 @@
         @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
         .card-header { display: flex; justify-content: space-between; font-size: 11px; text-transform: uppercase; font-weight: 800; }
         .card-val { font-size: 20px; font-weight: 900; margin: 5px 0; }
-        .instruction { font-size: 12px; font-weight: bold; margin-top: 5px; display: none; }
+        .card-balance { font-size: 13px; font-weight: 800; margin-top: 4px; }
+        .instruction { font-size: 12px; font-weight: bold; margin-top: 8px; display: none; }
         .over-limit .instruction { display: block; }
 
         /* Modal Confirmação */
@@ -71,6 +73,14 @@
         .confirm-card { background: white; padding: 25px; border-radius: 24px; width: 100%; max-width: 350px; text-align: center; }
         
         #detailPanel { display: none; margin-top: 15px; padding: 15px; background: #fff; border: 2px solid #f1f2f6; border-radius: 18px; }
+        
+        /* Estilo do Seletor de Mês */
+        .month-selector { text-align: center; margin-bottom: 20px; }
+        #monthPicker { width: auto; padding: 10px; border: 2px solid var(--primary); font-weight: bold; color: var(--dark); cursor: pointer; }
+
+        /* Estilo para itens pagos */
+        .item-paid { text-decoration: line-through; opacity: 0.5; transition: 0.3s; }
+        .check-paid { margin-right: 10px; width: 18px !important; height: 18px !important; cursor: pointer; margin-bottom: 0 !important; }
     </style>
 </head>
 <body>
@@ -91,6 +101,10 @@
     <div class="step active" id="step0">
         <h1>Meu Painel</h1>
         <span class="subtitle">Resumo Geral Financeiro</span>
+
+        <div class="month-selector">
+            <input type="month" id="monthPicker" onchange="changeMonth(this.value)">
+        </div>
         
         <div class="main-panel">
             <small>RENDA MENSAL DISPONÍVEL</small>
@@ -110,8 +124,8 @@
         <h1>Configurações</h1>
         <span class="subtitle">Defina sua renda e suas metas (%)</span>
         
-        <label style="font-size: 12px; font-weight: bold;">Sua Renda Líquida</label>
-        <input type="number" id="income" placeholder="Ex: 5000" oninput="saveIncome()">
+        <label style="font-size: 12px; font-weight: bold;">Sua Renda Líquida para este Mês</label>
+        <input type="number" id="income" placeholder="Ex: 5000" oninput="saveIncomeToState()">
 
         <div id="rulesList"></div>
         <button class="btn-add" onclick="addRule()">+ Nova Categoria de Meta</button>
@@ -169,12 +183,14 @@
 
         <div class="btn-group">
             <button class="btn-back" onclick="prevStep(0)">Início</button>
-            <button class="btn-next" onclick="saveAll()">Salvar Plano</button>
+            <button class="btn-next" onclick="saveAll()">Salvar Plano Mensal</button>
         </div>
     </div>
 </div>
 
 <script>
+    // Estado Global
+    let currentMonth = new Date().toISOString().slice(0, 7); // Formato YYYY-MM
     let income = 0;
     let rules = [
         { id: 1, name: "Essencial", perc: 70, color: "#e1f5fe" },
@@ -182,8 +198,45 @@
         { id: 3, name: "Estilo de Vida", perc: 10, color: "#e8f5e9" }
     ];
     let expenses = [];
+    let db = {}; // Banco de dados completo por mês
+
     let pendingDeleteId = null;
     let deleteType = null; 
+    let lastOpenedRuleId = null;
+
+    function changeMonth(val) {
+        currentMonth = val;
+        loadMonthData();
+        updateUI();
+    }
+
+    function loadMonthData() {
+        const stored = JSON.parse(localStorage.getItem('prumoWizardData')) || {};
+        db = stored;
+        
+        if(stored.globalRules) rules = stored.globalRules;
+
+        const monthInfo = stored[currentMonth] || { income: 0, expenses: [] };
+        income = monthInfo.income;
+        expenses = monthInfo.expenses;
+
+        document.getElementById('income').value = income || '';
+        renderRules();
+        renderExpenses();
+    }
+
+    function saveAll() {
+        db[currentMonth] = { income, expenses };
+        db.globalRules = rules;
+        localStorage.setItem('prumoWizardData', JSON.stringify(db));
+        alert(`Dados de ${currentMonth} salvos com sucesso!`);
+        nextStep(0);
+    }
+
+    function saveIncomeToState() {
+        income = parseFloat(document.getElementById('income').value) || 0;
+        updateUI();
+    }
 
     function nextStep(step) { changeStep(step); }
     function prevStep(step) { changeStep(step); }
@@ -276,11 +329,22 @@
         const val = parseFloat(document.getElementById('expVal').value);
         const ruleId = document.getElementById('expRule').value;
         if(!name || !val) return;
-        expenses.push({ id: Date.now(), name, val, ruleId: parseInt(ruleId) });
+        expenses.push({ id: Date.now(), name, val, ruleId: parseInt(ruleId), paid: false });
         document.getElementById('expName').value = '';
         document.getElementById('expVal').value = '';
         renderExpenses();
         updateUI();
+    }
+
+    function togglePaid(id) {
+        const expense = expenses.find(e => e.id === id);
+        if (expense) {
+            expense.paid = !expense.paid;
+            renderExpenses();
+            if(document.getElementById('detailPanel').style.display === 'block') {
+                showDetails(lastOpenedRuleId);
+            }
+        }
     }
 
     function renderExpenses() {
@@ -288,16 +352,17 @@
         if(!list) return;
         list.innerHTML = expenses.map(e => {
             const rule = rules.find(r => r.id === e.ruleId);
-            return `<div class="category-item">
-                <div><b>${e.name}</b><br><small>${rule ? rule.name : 'Outros'}</small></div>
+            return `<div class="category-item ${e.paid ? 'item-paid' : ''}">
+                <div style="display:flex; align-items:center">
+                    <input type="checkbox" class="check-paid" ${e.paid ? 'checked' : ''} onclick="togglePaid(${e.id})">
+                    <div><b>${e.name}</b><br><small>${rule ? rule.name : 'Outros'}</small></div>
+                </div>
                 <div><b>R$ ${e.val.toFixed(2)}</b> <button onclick="askDeleteExpense(${e.id}, '${e.name}')" style="background:none; color:var(--danger); padding:5px; font-size:18px;">×</button></div>
             </div>`;
         }).join('');
     }
 
-    let lastOpenedRuleId = null;
     function updateUI() {
-        income = parseFloat(document.getElementById('income').value) || 0;
         const totalSpent = expenses.reduce((sum, e) => sum + e.val, 0);
         
         document.getElementById('dashIncome').innerText = income.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
@@ -311,12 +376,16 @@
         rules.forEach(r => {
             const limit = income * (r.perc / 100);
             const spent = expenses.filter(e => e.ruleId === r.id).reduce((sum, e) => sum + e.val, 0);
+            const balance = limit - spent;
             const isOver = spent > limit;
             
             dash.innerHTML += `
                 <div class="summary-card ${isOver ? 'over-limit' : ''}" style="background: ${r.color || '#f1f2f6'}" onclick="showDetails(${r.id})">
                     <div class="card-header"><span>${r.name} (${r.perc}%)</span> <span>Limite: R$ ${limit.toFixed(2)}</span></div>
-                    <div class="card-val">Gasto: R$ ${spent.toFixed(2)}</div>
+                    <div class="card-val">Gasto: R$ ${spent.toFixed(2)} ${isOver ? '⚠️' : ''}</div>
+                    <div class="card-balance" style="color: ${isOver ? 'var(--danger)' : 'var(--success)'}">
+                        Saldo: R$ ${balance.toFixed(2)}
+                    </div>
                     <div class="instruction">🔴 Atenção: Corte gastos nesta categoria!</div>
                 </div>`;
         });
@@ -334,34 +403,22 @@
         panel.style.display = 'block';
         document.getElementById('detailTitle').innerText = `Itens em ${rule.name}`;
         list.innerHTML = filtered.map(e => `
-            <div class="detail-item" style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee; font-size:13px">
-                <span>${e.name}</span>
+            <div class="detail-item ${e.paid ? 'item-paid' : ''}" style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #eee; font-size:13px">
+                <div style="display:flex; align-items:center">
+                    <input type="checkbox" class="check-paid" ${e.paid ? 'checked' : ''} onclick="togglePaid(${e.id})">
+                    <span>${e.name}</span>
+                </div>
                 <div><b>R$ ${e.val.toFixed(2)}</b> <button onclick="askDeleteExpense(${e.id}, '${e.name}')" style="background:none; color:var(--danger); padding:0 5px; font-size:16px">×</button></div>
             </div>
-        `).join('') || '<p style="font-size:12px; color:#999">Vazio.</p>';
+        `).join('') || '<p style="font-size:12px; color:#999">Nenhum gasto registrado nesta categoria.</p>';
         panel.scrollIntoView({ behavior: 'smooth' });
     }
 
     function closeDetails() { document.getElementById('detailPanel').style.display = 'none'; }
 
-    function saveIncome() { income = parseFloat(document.getElementById('income').value) || 0; updateUI(); }
-    
-    function saveAll() {
-        localStorage.setItem('wizardProData', JSON.stringify({ income, rules, expenses }));
-        alert("Plano salvo com sucesso!");
-        nextStep(0);
-    }
-
     window.onload = () => {
-        const saved = JSON.parse(localStorage.getItem('wizardProData'));
-        if(saved) {
-            income = saved.income;
-            rules = saved.rules;
-            expenses = saved.expenses;
-            document.getElementById('income').value = income;
-        }
-        renderRules();
-        renderExpenses();
+        document.getElementById('monthPicker').value = currentMonth;
+        loadMonthData();
         updateUI();
     };
 </script>
