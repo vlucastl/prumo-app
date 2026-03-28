@@ -32,31 +32,28 @@
         input, select { width: 100%; padding: 14px; border: 2px solid #f1f2f6; border-radius: 12px; font-size: 16px; margin-bottom: 12px; outline: none; background: #f9f9f9; transition: 0.3s; }
         input:focus { border-color: var(--primary); background: white; }
 
-        /* Estilização dos Sliders */
+        /* Sliders Customizados */
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 15px 0; }
         input[type=range]:focus { outline: none; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; background: #e1f5fe; border-radius: 10px; }
-        input[type=range]::-webkit-slider-thumb { height: 24px; width: 24px; border-radius: 50%; background: var(--primary); cursor: pointer; -webkit-appearance: none; margin-top: -8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; background: #eee; border-radius: 10px; }
+        input[type=range]::-webkit-slider-thumb { height: 24px; width: 24px; border-radius: 50%; background: var(--primary); cursor: pointer; -webkit-appearance: none; margin-top: -8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         
         .rule-item { background: #fdfdfd; padding: 15px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 10px; }
         .rule-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 14px; }
+        .total-badge { text-align: center; background: var(--dark); color: white; padding: 8px; border-radius: 10px; margin-bottom: 15px; font-size: 13px; }
 
-        /* Tela de Auth */
+        /* Auth & Dash */
         .auth-container { text-align: center; }
         .logo-area { font-size: 40px; margin-bottom: 10px; font-weight: 900; color: var(--primary); letter-spacing: -2px; }
         .pass-wrapper { position: relative; }
         .btn-eye { position: absolute; right: 15px; top: 15px; background: none; border: none; cursor: pointer; font-size: 18px; color: #ccc; width: auto; padding: 0; }
         .auth-footer { margin-top: 20px; font-size: 13px; color: #7f8c8d; }
         .auth-footer b { color: var(--primary); cursor: pointer; }
-
         .btn-google { background: white; color: #444; border: 2px solid #f1f2f6 !important; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; width: 100%; height: 50px; border-radius: 12px; font-weight: bold; cursor: pointer; }
         .btn-google img { width: 18px; }
-
         .btn-next { background: var(--primary); color: white; width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 10px; }
         .btn-back { background: #eee; color: #7f8c8d; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; flex: 1; }
         .btn-add { background: var(--dark); color: white; margin-bottom: 15px; width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; }
-
-        /* Dashboard */
         .user-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 12px; color: #999; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         .user-bar span { color: var(--primary); font-weight: bold; }
         .main-panel { background: var(--dark); color: white; padding: 20px; border-radius: 20px; margin-bottom: 20px; text-align: center; }
@@ -64,43 +61,33 @@
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .stat-box { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; font-size: 12px; }
         .stat-box b { display: block; font-size: 16px; }
-
         .category-item { background: #fff; border: 1px solid #eee; padding: 12px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .summary-card { padding: 18px; border-radius: 20px; margin-bottom: 12px; cursor: pointer; border: 2px solid transparent; }
         .summary-card.over-limit { border-color: var(--danger); background: #fff0f0 !important; color: var(--danger) !important; animation: shake 0.5s; }
-        
         #detailPanel { display: none; margin-top: 15px; padding: 15px; background: #fff; border: 2px solid #f1f2f6; border-radius: 18px; }
         .item-paid { text-decoration: line-through; opacity: 0.5; }
         .check-paid { margin-right: 10px; width: 18px !important; height: 18px !important; margin-bottom: 0 !important; }
-
         @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
     </style>
 </head>
 <body>
 
 <div class="container">
-    
     <div class="step active" id="stepAuth">
         <div class="auth-container">
             <div class="logo-area">PRUMO</div>
             <h1 id="authTitle">Acesse sua conta</h1>
             <span class="subtitle" id="authSubtitle">Dados salvos na nuvem em tempo real</span>
-            
             <button class="btn-google" onclick="handleGoogleAuth()">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-                Entrar com o Google
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Entrar com o Google
             </button>
-
             <div style="font-size: 11px; color: #ccc; margin-bottom: 15px;">OU USE E-MAIL</div>
-
             <input type="email" id="authEmail" placeholder="E-mail">
             <div class="pass-wrapper">
                 <input type="password" id="authPassword" placeholder="Senha">
                 <button class="btn-eye" onclick="togglePass()">👁️</button>
             </div>
-
             <button class="btn-next" id="btnAuthMain" onclick="handleAuth()">Entrar no Painel</button>
-            
             <div class="auth-footer" id="authFooter">
                 Novo por aqui? <b onclick="toggleAuthMode()">Criar conta grátis</b>
             </div>
@@ -116,7 +103,6 @@
         <div style="text-align: center; margin-bottom: 15px;">
             <input type="month" id="monthPicker" onchange="changeMonth(this.value)" style="width: auto; padding: 10px; border: 2px solid var(--primary); border-radius: 10px;">
         </div>
-        
         <div class="main-panel">
             <small>RENDA MENSAL DISPONÍVEL</small>
             <div class="income-val" id="dashIncome">R$ 0,00</div>
@@ -125,7 +111,6 @@
                 <div class="stat-box">Saldo Livre<b id="dashBalance">R$ 0,00</b></div>
             </div>
         </div>
-
         <button class="btn-next" onclick="nextStep(1)">Configurar Plano</button>
         <button class="btn-next" style="background: var(--dark)" onclick="nextStep(3)">Lançar Gastos</button>
         <button class="btn-next" style="background: var(--info)" onclick="nextStep(4)">Análise de Cortes</button>
@@ -134,6 +119,7 @@
     <div class="step" id="step1">
         <h1>Configurações</h1>
         <input type="number" id="income" placeholder="Sua Renda Líquida" oninput="saveIncomeToState()">
+        <div id="totalBadge" class="total-badge">Orçamento Distribuído: 100%</div>
         <div id="rulesList"></div>
         <button class="btn-add" onclick="addRule()">+ Nova Categoria</button>
         <div class="btn-group" style="display:flex; gap:10px">
@@ -189,7 +175,6 @@
     const auth = getAuth(app);
     const googleProvider = new GoogleAuthProvider();
 
-    // Estado Global
     window.currentMonth = new Date().toISOString().slice(0, 7);
     window.income = 0;
     window.rules = [
@@ -201,7 +186,6 @@
     window.isLoginMode = true;
     let currentUser = null;
 
-    // --- FUNÇÕES DE AUTH ---
     window.togglePass = () => {
         const p = document.getElementById('authPassword');
         p.type = p.type === 'password' ? 'text' : 'password';
@@ -212,8 +196,7 @@
         document.getElementById('authTitle').innerText = window.isLoginMode ? 'Acesse sua conta' : 'Criar nova conta';
         document.getElementById('btnAuthMain').innerText = window.isLoginMode ? 'Entrar no Painel' : 'Cadastrar e Começar';
         document.getElementById('authFooter').innerHTML = window.isLoginMode ? 
-            'Novo por aqui? <b onclick="toggleAuthMode()">Criar conta grátis</b>' : 
-            'Já tem conta? <b onclick="toggleAuthMode()">Fazer Login</b>';
+            'Novo por aqui? <b onclick="toggleAuthMode()">Criar conta grátis</b>' : 'Já tem conta? <b onclick="toggleAuthMode()">Fazer Login</b>';
     };
 
     window.handleAuth = async () => {
@@ -242,7 +225,6 @@
         }
     });
 
-    // --- FUNÇÕES DE DADOS ---
     window.saveAll = async () => {
         if(!currentUser) return;
         try {
@@ -252,7 +234,7 @@
             fullData.globalRules = window.rules;
             fullData[window.currentMonth] = { income: window.income, expenses: window.expenses };
             await setDoc(docRef, fullData);
-            alert("✅ Tudo salvo na nuvem!");
+            alert("✅ Sincronizado!");
             changeStep(0);
         } catch (e) { alert("Erro ao salvar."); }
     };
@@ -272,53 +254,61 @@
         updateUI(); renderRules(); renderExpenses();
     };
 
-    // --- FUNÇÕES DE INTERFACE ---
     function changeStep(s) {
         document.querySelectorAll('.step').forEach(d => d.classList.remove('active'));
         document.getElementById('step' + s).classList.add('active');
         window.scrollTo(0,0);
+        if(s === 1) renderRules();
     }
     window.nextStep = (s) => changeStep(s);
     window.prevStep = (s) => changeStep(s);
     window.saveIncomeToState = () => { window.income = parseFloat(document.getElementById('income').value) || 0; updateUI(); };
     window.changeMonth = (v) => { window.currentMonth = v; loadMonthData(); };
 
-    // --- LOGICA DE CATEGORIAS (SLIDERS) ---
+    // --- LÓGICA DE DISTRIBUIÇÃO INDEPENDENTE ---
     window.renderRules = () => {
         const list = document.getElementById('rulesList');
-        const totalUsado = window.rules.reduce((acc, r) => acc + r.perc, 0);
+        const total = window.rules.reduce((a, b) => a + b.perc, 0);
+        document.getElementById('totalBadge').innerText = `Orçamento Distribuído: ${total}%`;
+        document.getElementById('totalBadge').style.background = total > 100 ? 'var(--danger)' : 'var(--dark)';
 
         list.innerHTML = window.rules.map((r, i) => {
-            const maxDisponivel = r.perc + (100 - totalUsado);
+            // Cada barra pode ir até 100%, mas a lógica updateRule impedirá a soma total > 100
             return `
                 <div class="rule-item">
                     <div class="rule-header">
-                        <input type="text" value="${r.name}" onchange="updateRule(${i},'name',this.value)" style="border:none; background:transparent; font-weight:bold; width:60%; margin-bottom:0; padding:5px">
-                        <span style="color:var(--primary)">${r.perc}%</span>
+                        <input type="text" value="${r.name}" onchange="updateRuleName(${i}, this.value)" style="border:none; background:transparent; font-weight:bold; width:60%; margin:0; padding:5px">
+                        <span id="percLabel${i}" style="color:var(--primary)">${r.perc}%</span>
                     </div>
-                    <input type="range" min="0" max="${maxDisponivel}" value="${r.perc}" 
-                           oninput="updateRule(${i},'perc',this.value)">
+                    <input type="range" min="0" max="100" value="${r.perc}" 
+                           oninput="liveUpdateRule(${i}, this.value)" 
+                           onchange="renderRules()">
                 </div>`;
         }).join('');
         
-        document.getElementById('expRule').innerHTML = window.rules.map(r => 
-            `<option value="${r.id}">${r.name} (${r.perc}%)</option>`
-        ).join('');
+        document.getElementById('expRule').innerHTML = window.rules.map(r => `<option value="${r.id}">${r.name} (${r.perc}%)</option>`).join('');
     };
 
-    window.updateRule = (i, f, v) => {
-        if (f === 'perc') {
-            let novoValor = parseFloat(v);
-            const outrasRegras = window.rules.filter((_, index) => index !== i);
-            const somaOutras = outrasRegras.reduce((acc, r) => acc + r.perc, 0);
-            if (somaOutras + novoValor > 100) novoValor = 100 - somaOutras;
-            window.rules[i].perc = novoValor;
-        } else {
-            window.rules[i][f] = v;
+    window.liveUpdateRule = (index, value) => {
+        let val = parseFloat(value);
+        const outrasRegras = window.rules.filter((_, i) => i !== index);
+        const somaOutras = outrasRegras.reduce((a, b) => a + b.perc, 0);
+
+        // Se a tentativa de aumento estourar os 100%, trava no máximo possível
+        if (somaOutras + val > 100) {
+            val = 100 - somaOutras;
         }
-        renderRules();
-        updateUI(); 
+
+        window.rules[index].perc = val;
+        
+        // Atualiza apenas o texto e o valor do slider visualmente (performance fluida)
+        document.getElementById(`percLabel${index}`).innerText = val + '%';
+        const total = somaOutras + val;
+        document.getElementById('totalBadge').innerText = `Orçamento Distribuído: ${total}%`;
+        updateUI();
     };
+
+    window.updateRuleName = (i, v) => { window.rules[i].name = v; };
 
     window.addRule = () => {
         window.rules.push({id: Date.now(), name: "Nova", perc: 0, color: "#eee"}); 
@@ -365,8 +355,8 @@
         dash.innerHTML = window.rules.map(r => {
             const lim = window.income * (r.perc/100);
             const g = window.expenses.filter(e => e.ruleId === r.id).reduce((s, e) => s + e.val, 0);
-            const over = g > lim;
-            return `<div class="summary-card ${over?'over-limit':''}" style="background:${r.color}" onclick="showDetails(${r.id})">
+            const over = g > lim && lim > 0;
+            return `<div class="summary-card ${over?'over-limit':''}" style="background:${r.color || '#f9f9f9'}" onclick="showDetails(${r.id})">
                 <div style="display:flex;justify-content:space-between;font-size:10px"><b>${r.name}</b> <span>LIM: R$ ${lim.toFixed(2)}</span></div>
                 <div style="font-size:20px;font-weight:900">R$ ${g.toFixed(2)}</div>
                 <div style="font-size:12px;color:${over?'var(--danger)':'var(--success)'}">Saldo: R$ ${(lim-g).toFixed(2)}</div>
