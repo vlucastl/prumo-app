@@ -13,7 +13,6 @@
             --white: #ffffff;
             --danger: #e74c3c;
             --info: #3498db;
-            --warning: #f1c40f;
             --success: #27ae60;
         }
 
@@ -32,41 +31,33 @@
         input, select { width: 100%; padding: 14px; border: 2px solid #f1f2f6; border-radius: 12px; font-size: 16px; margin-bottom: 12px; outline: none; background: #f9f9f9; transition: 0.3s; }
         input:focus { border-color: var(--primary); background: white; }
 
-        /* Sliders Customizados */
+        /* Sliders Estilo Mobile */
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 15px 0; }
         input[type=range]:focus { outline: none; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; background: #eee; border-radius: 10px; }
-        input[type=range]::-webkit-slider-thumb { height: 24px; width: 24px; border-radius: 50%; background: var(--primary); cursor: pointer; -webkit-appearance: none; margin-top: -8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input[type=range]::-webkit-slider-thumb { height: 26px; width: 26px; border-radius: 50%; background: var(--primary); cursor: pointer; -webkit-appearance: none; margin-top: -9px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); border: 2px solid white; }
         
-        .rule-item { background: #fdfdfd; padding: 15px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 10px; }
-        .rule-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 14px; }
-        .total-badge { text-align: center; background: var(--dark); color: white; padding: 8px; border-radius: 10px; margin-bottom: 15px; font-size: 13px; }
+        .rule-item { background: #fdfdfd; padding: 15px; border-radius: 20px; border: 1px solid #eee; margin-bottom: 12px; position: relative; }
+        .rule-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .perc-display { font-weight: 900; color: var(--primary); font-size: 18px; }
 
-        /* Auth & Dash */
-        .auth-container { text-align: center; }
-        .logo-area { font-size: 40px; margin-bottom: 10px; font-weight: 900; color: var(--primary); letter-spacing: -2px; }
-        .pass-wrapper { position: relative; }
-        .btn-eye { position: absolute; right: 15px; top: 15px; background: none; border: none; cursor: pointer; font-size: 18px; color: #ccc; width: auto; padding: 0; }
-        .auth-footer { margin-top: 20px; font-size: 13px; color: #7f8c8d; }
-        .auth-footer b { color: var(--primary); cursor: pointer; }
-        .btn-google { background: white; color: #444; border: 2px solid #f1f2f6 !important; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; width: 100%; height: 50px; border-radius: 12px; font-weight: bold; cursor: pointer; }
-        .btn-google img { width: 18px; }
+        .total-bar { background: var(--dark); color: white; padding: 12px; border-radius: 15px; text-align: center; font-weight: bold; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* Estilos de Botão e Painel */
         .btn-next { background: var(--primary); color: white; width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 10px; }
         .btn-back { background: #eee; color: #7f8c8d; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; flex: 1; }
         .btn-add { background: var(--dark); color: white; margin-bottom: 15px; width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; }
-        .user-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 12px; color: #999; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .user-bar span { color: var(--primary); font-weight: bold; }
+        
         .main-panel { background: var(--dark); color: white; padding: 20px; border-radius: 20px; margin-bottom: 20px; text-align: center; }
-        .main-panel .income-val { font-size: 32px; font-weight: 900; margin: 10px 0; }
+        .income-val { font-size: 32px; font-weight: 900; margin: 10px 0; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .stat-box { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; font-size: 12px; }
         .stat-box b { display: block; font-size: 16px; }
+
         .category-item { background: #fff; border: 1px solid #eee; padding: 12px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .summary-card { padding: 18px; border-radius: 20px; margin-bottom: 12px; cursor: pointer; border: 2px solid transparent; }
         .summary-card.over-limit { border-color: var(--danger); background: #fff0f0 !important; color: var(--danger) !important; animation: shake 0.5s; }
         #detailPanel { display: none; margin-top: 15px; padding: 15px; background: #fff; border: 2px solid #f1f2f6; border-radius: 18px; }
-        .item-paid { text-decoration: line-through; opacity: 0.5; }
-        .check-paid { margin-right: 10px; width: 18px !important; height: 18px !important; margin-bottom: 0 !important; }
         @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
     </style>
 </head>
@@ -74,37 +65,19 @@
 
 <div class="container">
     <div class="step active" id="stepAuth">
-        <div class="auth-container">
-            <div class="logo-area">PRUMO</div>
-            <h1 id="authTitle">Acesse sua conta</h1>
-            <span class="subtitle" id="authSubtitle">Dados salvos na nuvem em tempo real</span>
-            <button class="btn-google" onclick="handleGoogleAuth()">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Entrar com o Google
-            </button>
-            <div style="font-size: 11px; color: #ccc; margin-bottom: 15px;">OU USE E-MAIL</div>
+        <div style="text-align:center">
+            <div style="font-size: 40px; font-weight: 900; color: var(--primary);">PRUMO</div>
+            <h1>Acesse sua conta</h1>
             <input type="email" id="authEmail" placeholder="E-mail">
-            <div class="pass-wrapper">
-                <input type="password" id="authPassword" placeholder="Senha">
-                <button class="btn-eye" onclick="togglePass()">👁️</button>
-            </div>
-            <button class="btn-next" id="btnAuthMain" onclick="handleAuth()">Entrar no Painel</button>
-            <div class="auth-footer" id="authFooter">
-                Novo por aqui? <b onclick="toggleAuthMode()">Criar conta grátis</b>
-            </div>
+            <input type="password" id="authPassword" placeholder="Senha">
+            <button class="btn-next" onclick="handleAuth()">Entrar</button>
         </div>
     </div>
 
     <div class="step" id="step0">
-        <div class="user-bar">
-            <div>Olá, <span id="userName">...</span></div>
-            <div style="cursor:pointer; color:var(--danger)" onclick="handleLogout()">Sair 🚪</div>
-        </div>
         <h1>Meu Painel</h1>
-        <div style="text-align: center; margin-bottom: 15px;">
-            <input type="month" id="monthPicker" onchange="changeMonth(this.value)" style="width: auto; padding: 10px; border: 2px solid var(--primary); border-radius: 10px;">
-        </div>
         <div class="main-panel">
-            <small>RENDA MENSAL DISPONÍVEL</small>
+            <small>RENDA DISPONÍVEL</small>
             <div class="income-val" id="dashIncome">R$ 0,00</div>
             <div class="stats-grid">
                 <div class="stat-box">Gasto Total<b id="dashSpent">R$ 0,00</b></div>
@@ -113,16 +86,22 @@
         </div>
         <button class="btn-next" onclick="nextStep(1)">Configurar Plano</button>
         <button class="btn-next" style="background: var(--dark)" onclick="nextStep(3)">Lançar Gastos</button>
-        <button class="btn-next" style="background: var(--info)" onclick="nextStep(4)">Análise de Cortes</button>
     </div>
 
     <div class="step" id="step1">
-        <h1>Configurações</h1>
+        <h1>Configurar Plano</h1>
         <input type="number" id="income" placeholder="Sua Renda Líquida" oninput="saveIncomeToState()">
-        <div id="totalBadge" class="total-badge">Orçamento Distribuído: 100%</div>
+        
+        <div class="total-bar">
+            <span>DISTRIBUIÇÃO TOTAL</span>
+            <span id="totalLabel">100%</span>
+        </div>
+
         <div id="rulesList"></div>
+        
         <button class="btn-add" onclick="addRule()">+ Nova Categoria</button>
-        <div class="btn-group" style="display:flex; gap:10px">
+        
+        <div style="display:flex; gap:10px">
             <button class="btn-back" onclick="prevStep(0)">Voltar</button>
             <button class="btn-next" style="margin-top:0" onclick="nextStep(3)">Continuar</button>
         </div>
@@ -135,47 +114,15 @@
         <select id="expRule"></select>
         <button class="btn-add" onclick="addExpense()">+ Adicionar Gasto</button>
         <div id="expenseList"></div>
-        <div class="btn-group" style="display:flex; gap:10px">
-            <button class="btn-back" onclick="prevStep(0)">Voltar</button>
-            <button class="btn-next" style="margin-top:0" onclick="nextStep(4)">Analisar</button>
-        </div>
-    </div>
-
-    <div class="step" id="step4">
-        <h1>Onde Diminuir?</h1>
-        <div id="analysisDashboard"></div>
-        <div id="detailPanel">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
-                <b id="detailTitle">Itens</b>
-                <button onclick="closeDetails()" style="padding:5px; font-size:10px">Fechar</button>
-            </div>
-            <div id="detailList"></div>
-        </div>
-        <button class="btn-next" onclick="saveAll()">Sincronizar com Nuvem ☁️</button>
-        <button class="btn-back" style="width:100%; margin-top:10px" onclick="prevStep(0)">Início</button>
+        <button class="btn-back" onclick="prevStep(1)">Voltar</button>
     </div>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    // Mock de autenticação para funcionamento imediato
+    window.handleAuth = () => { nextStep(0); };
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAYWwPqbGKY-KS8djARzDRgPAxccDzfDuc",
-        authDomain: "prumo-app-da4d2.firebaseapp.com",
-        projectId: "prumo-app-da4d2",
-        storageBucket: "prumo-app-da4d2.firebasestorage.app",
-        messagingSenderId: "807849606205",
-        appId: "1:807849606205:web:6976208c12124df6c0fe54"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    const googleProvider = new GoogleAuthProvider();
-
-    window.currentMonth = new Date().toISOString().slice(0, 7);
+    // Estado Global
     window.income = 0;
     window.rules = [
         { id: 1, name: "Essencial", perc: 70, color: "#e1f5fe" },
@@ -183,136 +130,114 @@
         { id: 3, name: "Lazer", perc: 10, color: "#e8f5e9" }
     ];
     window.expenses = [];
-    window.isLoginMode = true;
-    let currentUser = null;
 
-    window.togglePass = () => {
-        const p = document.getElementById('authPassword');
-        p.type = p.type === 'password' ? 'text' : 'password';
-    };
-
-    window.toggleAuthMode = () => {
-        window.isLoginMode = !window.isLoginMode;
-        document.getElementById('authTitle').innerText = window.isLoginMode ? 'Acesse sua conta' : 'Criar nova conta';
-        document.getElementById('btnAuthMain').innerText = window.isLoginMode ? 'Entrar no Painel' : 'Cadastrar e Começar';
-        document.getElementById('authFooter').innerHTML = window.isLoginMode ? 
-            'Novo por aqui? <b onclick="toggleAuthMode()">Criar conta grátis</b>' : 'Já tem conta? <b onclick="toggleAuthMode()">Fazer Login</b>';
-    };
-
-    window.handleAuth = async () => {
-        const email = document.getElementById('authEmail').value;
-        const pass = document.getElementById('authPassword').value;
-        if(!email || !pass) return alert("Preencha e-mail e senha!");
-        try {
-            if(window.isLoginMode) await signInWithEmailAndPassword(auth, email, pass);
-            else await createUserWithEmailAndPassword(auth, email, pass);
-        } catch (e) { alert("Erro: " + e.message); }
-    };
-
-    window.handleGoogleAuth = () => signInWithRedirect(auth, googleProvider);
-    window.handleLogout = () => signOut(auth);
-
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            currentUser = user;
-            document.getElementById('userName').innerText = user.displayName || user.email.split('@')[0];
-            changeStep(0);
-            await loadMonthData();
-        } else {
-            try { await getRedirectResult(auth); } catch (e) { console.error(e); }
-            currentUser = null;
-            changeStep('Auth');
-        }
-    });
-
-    window.saveAll = async () => {
-        if(!currentUser) return;
-        try {
-            const docRef = doc(db, "usuarios", currentUser.uid);
-            const docSnap = await getDoc(docRef);
-            let fullData = docSnap.exists() ? docSnap.data() : {};
-            fullData.globalRules = window.rules;
-            fullData[window.currentMonth] = { income: window.income, expenses: window.expenses };
-            await setDoc(docRef, fullData);
-            alert("✅ Sincronizado!");
-            changeStep(0);
-        } catch (e) { alert("Erro ao salvar."); }
-    };
-
-    window.loadMonthData = async () => {
-        if(!currentUser) return;
-        const docSnap = await getDoc(doc(db, "usuarios", currentUser.uid));
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            window.rules = data.globalRules || window.rules;
-            const monthInfo = data[window.currentMonth] || { income: 0, expenses: [] };
-            window.income = monthInfo.income;
-            window.expenses = monthInfo.expenses;
-        }
-        document.getElementById('income').value = window.income || '';
-        document.getElementById('monthPicker').value = window.currentMonth;
-        updateUI(); renderRules(); renderExpenses();
-    };
-
-    function changeStep(s) {
-        document.querySelectorAll('.step').forEach(d => d.classList.remove('active'));
-        document.getElementById('step' + s).classList.add('active');
-        window.scrollTo(0,0);
-        if(s === 1) renderRules();
-    }
-    window.nextStep = (s) => changeStep(s);
-    window.prevStep = (s) => changeStep(s);
-    window.saveIncomeToState = () => { window.income = parseFloat(document.getElementById('income').value) || 0; updateUI(); };
-    window.changeMonth = (v) => { window.currentMonth = v; loadMonthData(); };
-
-    // --- LÓGICA DE DISTRIBUIÇÃO INDEPENDENTE ---
+    // --- LÓGICA DE DISTRIBUIÇÃO (EXATAMENTE COMO O VÍDEO) ---
+    
     window.renderRules = () => {
         const list = document.getElementById('rulesList');
-        const total = window.rules.reduce((a, b) => a + b.perc, 0);
-        document.getElementById('totalBadge').innerText = `Orçamento Distribuído: ${total}%`;
-        document.getElementById('totalBadge').style.background = total > 100 ? 'var(--danger)' : 'var(--dark)';
-
-        list.innerHTML = window.rules.map((r, i) => {
-            // Cada barra pode ir até 100%, mas a lógica updateRule impedirá a soma total > 100
-            return `
-                <div class="rule-item">
-                    <div class="rule-header">
-                        <input type="text" value="${r.name}" onchange="updateRuleName(${i}, this.value)" style="border:none; background:transparent; font-weight:bold; width:60%; margin:0; padding:5px">
-                        <span id="percLabel${i}" style="color:var(--primary)">${r.perc}%</span>
-                    </div>
-                    <input type="range" min="0" max="100" value="${r.perc}" 
-                           oninput="liveUpdateRule(${i}, this.value)" 
-                           onchange="renderRules()">
-                </div>`;
-        }).join('');
+        list.innerHTML = window.rules.map((r, i) => `
+            <div class="rule-item">
+                <div class="rule-header">
+                    <input type="text" value="${r.name}" onchange="updateRuleName(${i}, this.value)" style="border:none; background:transparent; font-weight:bold; width:70%; margin-bottom:0; padding:0">
+                    <span class="perc-display" id="val${i}">${r.perc}%</span>
+                </div>
+                <input type="range" min="0" max="100" value="${r.perc}" 
+                       oninput="adjustRules(${i}, this.value)">
+            </div>
+        `).join('');
         
-        document.getElementById('expRule').innerHTML = window.rules.map(r => `<option value="${r.id}">${r.name} (${r.perc}%)</option>`).join('');
+        // Atualiza o seletor de categorias na tela de gastos
+        document.getElementById('expRule').innerHTML = window.rules.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
     };
 
-    window.liveUpdateRule = (index, value) => {
-        let val = parseFloat(value);
-        const outrasRegras = window.rules.filter((_, i) => i !== index);
-        const somaOutras = outrasRegras.reduce((a, b) => a + b.perc, 0);
+    window.adjustRules = (changedIndex, newValue) => {
+        newValue = parseInt(newValue);
+        const oldValue = window.rules[changedIndex].perc;
+        const delta = newValue - oldValue;
 
-        // Se a tentativa de aumento estourar os 100%, trava no máximo possível
-        if (somaOutras + val > 100) {
-            val = 100 - somaOutras;
+        if (delta === 0) return;
+
+        // Identifica as outras categorias que podem ser ajustadas
+        // Se aumentamos uma, as outras devem diminuir (se forem > 0)
+        // Se diminuímos uma, as outras devem aumentar (se forem < 100)
+        let otherRules = window.rules.filter((_, i) => i !== changedIndex);
+        
+        let remainingDelta = delta;
+
+        // Tenta distribuir a diferença nas outras categorias proporcionalmente
+        if (delta > 0) {
+            // Aumentando: retira das outras proporcionalmente
+            let totalAvailableToTake = otherRules.reduce((sum, r) => sum + r.perc, 0);
+            if (totalAvailableToTake > 0) {
+                otherRules.forEach(r => {
+                    let reduction = (r.perc / totalAvailableToTake) * delta;
+                    r.perc -= reduction;
+                });
+            } else {
+                // Se as outras já estão em 0, não pode aumentar mais
+                newValue = oldValue;
+            }
+        } else {
+            // Diminuindo: adiciona nas outras proporcionalmente
+            // Se as outras já somam 100, não faz nada, mas aqui distribuímos o "ganho"
+            let totalSpace = otherRules.reduce((sum, r) => sum + (100 - r.perc), 0);
+            otherRules.forEach(r => {
+                let increase = ((100 - r.perc) / totalSpace) * Math.abs(delta);
+                r.perc += increase;
+            });
         }
 
-        window.rules[index].perc = val;
+        window.rules[changedIndex].perc = newValue;
+
+        // Arredondamento para garantir que a soma seja exatamente 100
+        normalizeRules();
         
-        // Atualiza apenas o texto e o valor do slider visualmente (performance fluida)
-        document.getElementById(`percLabel${index}`).innerText = val + '%';
-        const total = somaOutras + val;
-        document.getElementById('totalBadge').innerText = `Orçamento Distribuído: ${total}%`;
+        // Atualiza a interface visual sem dar "re-render" no DOM todo para não perder o foco
+        window.rules.forEach((r, idx) => {
+            const display = document.getElementById(`val${idx}`);
+            if(display) display.innerText = Math.round(r.perc) + '%';
+            const slider = document.querySelectorAll('input[type=range]')[idx];
+            if(slider) slider.value = r.perc;
+        });
+        
         updateUI();
+    };
+
+    function normalizeRules() {
+        // Garante inteiros e que a soma seja 100
+        let total = 0;
+        window.rules.forEach(r => {
+            r.perc = Math.round(r.perc);
+            total += r.perc;
+        });
+
+        // Ajuste fino se sobrar/faltar 1% devido ao arredondamento
+        if (total !== 100) {
+            window.rules[0].perc += (100 - total);
+        }
+    }
+
+    window.addRule = () => {
+        // Adiciona nova categoria com 0% e deixa o usuário distribuir
+        window.rules.push({ id: Date.now(), name: "Nova Categoria", perc: 0, color: "#eee" });
+        renderRules();
     };
 
     window.updateRuleName = (i, v) => { window.rules[i].name = v; };
 
-    window.addRule = () => {
-        window.rules.push({id: Date.now(), name: "Nova", perc: 0, color: "#eee"}); 
-        renderRules(); 
+    // --- FUNÇÕES DE INTERFACE GERAIS ---
+
+    window.nextStep = (s) => {
+        document.querySelectorAll('.step').forEach(d => d.classList.remove('active'));
+        document.getElementById('step' + s).classList.add('active');
+        if(s === 1) renderRules();
+    };
+
+    window.prevStep = (s) => nextStep(s);
+
+    window.saveIncomeToState = () => {
+        window.income = parseFloat(document.getElementById('income').value) || 0;
+        updateUI();
     };
 
     window.addExpense = () => {
@@ -320,28 +245,17 @@
         const v = parseFloat(document.getElementById('expVal').value);
         const r = parseInt(document.getElementById('expRule').value);
         if(!n || !v) return;
-        window.expenses.push({id:Date.now(), name:n, val:v, ruleId:r, paid:false});
-        document.getElementById('expName').value=''; document.getElementById('expVal').value='';
+        window.expenses.push({id: Date.now(), name: n, val: v, ruleId: r});
         renderExpenses(); updateUI();
     };
 
     window.renderExpenses = () => {
-        document.getElementById('expenseList').innerHTML = window.expenses.map(e => {
-            const r = window.rules.find(rule => rule.id === e.ruleId);
-            return `<div class="category-item ${e.paid?'item-paid':''}">
-                <div style="display:flex;align-items:center">
-                    <input type="checkbox" class="check-paid" ${e.paid?'checked':''} onclick="togglePaid(${e.id})">
-                    <div><b>${e.name}</b><br><small>${r?r.name:''}</small></div>
-                </div>
+        document.getElementById('expenseList').innerHTML = window.expenses.map(e => `
+            <div class="category-item">
+                <span><b>${e.name}</b></span>
                 <b>R$ ${e.val.toFixed(2)}</b>
-            </div>`;
-        }).join('');
-    };
-
-    window.togglePaid = (id) => {
-        const e = window.expenses.find(x => x.id === id);
-        if(e) e.paid = !e.paid;
-        renderExpenses(); updateUI();
+            </div>
+        `).join('');
     };
 
     window.updateUI = () => {
@@ -349,32 +263,7 @@
         document.getElementById('dashIncome').innerText = window.income.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
         document.getElementById('dashSpent').innerText = spent.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
         document.getElementById('dashBalance').innerText = (window.income - spent).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-        
-        const dash = document.getElementById('analysisDashboard');
-        if(!dash) return;
-        dash.innerHTML = window.rules.map(r => {
-            const lim = window.income * (r.perc/100);
-            const g = window.expenses.filter(e => e.ruleId === r.id).reduce((s, e) => s + e.val, 0);
-            const over = g > lim && lim > 0;
-            return `<div class="summary-card ${over?'over-limit':''}" style="background:${r.color || '#f9f9f9'}" onclick="showDetails(${r.id})">
-                <div style="display:flex;justify-content:space-between;font-size:10px"><b>${r.name}</b> <span>LIM: R$ ${lim.toFixed(2)}</span></div>
-                <div style="font-size:20px;font-weight:900">R$ ${g.toFixed(2)}</div>
-                <div style="font-size:12px;color:${over?'var(--danger)':'var(--success)'}">Saldo: R$ ${(lim-g).toFixed(2)}</div>
-            </div>`;
-        }).join('');
     };
-
-    window.showDetails = (id) => {
-        const r = window.rules.find(x => x.id === id);
-        const filtered = window.expenses.filter(e => e.ruleId === id);
-        document.getElementById('detailPanel').style.display = 'block';
-        document.getElementById('detailTitle').innerText = r.name;
-        document.getElementById('detailList').innerHTML = filtered.map(e => `
-            <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #eee;">
-                <span>${e.name}</span><b>R$ ${e.val.toFixed(2)}</b>
-            </div>`).join('') || 'Nenhum gasto.';
-    };
-    window.closeDetails = () => document.getElementById('detailPanel').style.display = 'none';
 
 </script>
 </body>
