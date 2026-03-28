@@ -32,6 +32,15 @@
         input, select { width: 100%; padding: 14px; border: 2px solid #f1f2f6; border-radius: 12px; font-size: 16px; margin-bottom: 12px; outline: none; background: #f9f9f9; transition: 0.3s; }
         input:focus { border-color: var(--primary); background: white; }
 
+        /* Estilização dos Sliders */
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 15px 0; }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; background: #e1f5fe; border-radius: 10px; }
+        input[type=range]::-webkit-slider-thumb { height: 24px; width: 24px; border-radius: 50%; background: var(--primary); cursor: pointer; -webkit-appearance: none; margin-top: -8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        
+        .rule-item { background: #fdfdfd; padding: 15px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 10px; }
+        .rule-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 14px; }
+
         /* Tela de Auth */
         .auth-container { text-align: center; }
         .logo-area { font-size: 40px; margin-bottom: 10px; font-weight: 900; color: var(--primary); letter-spacing: -2px; }
@@ -166,7 +175,6 @@
     import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    // --- SUAS CHAVES REAIS ---
     const firebaseConfig = {
         apiKey: "AIzaSyAYWwPqbGKY-KS8djARzDRgPAxccDzfDuc",
         authDomain: "prumo-app-da4d2.firebaseapp.com",
@@ -275,20 +283,47 @@
     window.saveIncomeToState = () => { window.income = parseFloat(document.getElementById('income').value) || 0; updateUI(); };
     window.changeMonth = (v) => { window.currentMonth = v; loadMonthData(); };
 
+    // --- LOGICA DE CATEGORIAS (SLIDERS) ---
     window.renderRules = () => {
         const list = document.getElementById('rulesList');
-        list.innerHTML = window.rules.map((r, i) => `
-            <div class="rule-item">
-                <div class="rule-row">
-                    <input type="text" value="${r.name}" onchange="updateRule(${i},'name',this.value)" style="flex:2">
-                    <input type="number" value="${r.perc}" onchange="updateRule(${i},'perc',this.value)" style="flex:1"> %
-                </div>
-            </div>`).join('');
-        document.getElementById('expRule').innerHTML = window.rules.map(r => `<option value="${r.id}">${r.name} (${r.perc}%)</option>`).join('');
+        const totalUsado = window.rules.reduce((acc, r) => acc + r.perc, 0);
+
+        list.innerHTML = window.rules.map((r, i) => {
+            const maxDisponivel = r.perc + (100 - totalUsado);
+            return `
+                <div class="rule-item">
+                    <div class="rule-header">
+                        <input type="text" value="${r.name}" onchange="updateRule(${i},'name',this.value)" style="border:none; background:transparent; font-weight:bold; width:60%; margin-bottom:0; padding:5px">
+                        <span style="color:var(--primary)">${r.perc}%</span>
+                    </div>
+                    <input type="range" min="0" max="${maxDisponivel}" value="${r.perc}" 
+                           oninput="updateRule(${i},'perc',this.value)">
+                </div>`;
+        }).join('');
+        
+        document.getElementById('expRule').innerHTML = window.rules.map(r => 
+            `<option value="${r.id}">${r.name} (${r.perc}%)</option>`
+        ).join('');
     };
 
-    window.updateRule = (i, f, v) => { window.rules[i][f] = f==='perc'?parseFloat(v):v; updateUI(); };
-    window.addRule = () => { window.rules.push({id:Date.now(), name:"Nova", perc:0, color:"#eee"}); renderRules(); };
+    window.updateRule = (i, f, v) => {
+        if (f === 'perc') {
+            let novoValor = parseFloat(v);
+            const outrasRegras = window.rules.filter((_, index) => index !== i);
+            const somaOutras = outrasRegras.reduce((acc, r) => acc + r.perc, 0);
+            if (somaOutras + novoValor > 100) novoValor = 100 - somaOutras;
+            window.rules[i].perc = novoValor;
+        } else {
+            window.rules[i][f] = v;
+        }
+        renderRules();
+        updateUI(); 
+    };
+
+    window.addRule = () => {
+        window.rules.push({id: Date.now(), name: "Nova", perc: 0, color: "#eee"}); 
+        renderRules(); 
+    };
 
     window.addExpense = () => {
         const n = document.getElementById('expName').value;
