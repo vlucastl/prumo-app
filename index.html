@@ -29,58 +29,56 @@
         h1 { font-size: 24px; color: var(--dark); margin-bottom: 8px; text-align: center; }
         .subtitle { font-size: 14px; color: #7f8c8d; margin-bottom: 15px; text-align: center; display: block; }
 
-        input, select { width: 100%; padding: 14px; border: 2px solid #f1f2f6; border-radius: 12px; font-size: 16px; margin-bottom: 12px; outline: none; background: #f9f9f9; }
+        input, select { width: 100%; padding: 14px; border: 2px solid #f1f2f6; border-radius: 12px; font-size: 16px; margin-bottom: 12px; outline: none; background: #f9f9f9; transition: 0.3s; }
         input:focus { border-color: var(--primary); background: white; }
 
+        /* Estilo da Tela de Login */
+        .auth-container { text-align: center; }
+        .logo-area { font-size: 40px; margin-bottom: 20px; font-weight: 900; color: var(--primary); letter-spacing: -2px; }
+        .pass-wrapper { position: relative; }
+        .btn-eye { position: absolute; right: 15px; top: 15px; background: none; border: none; cursor: pointer; font-size: 18px; color: #ccc; width: auto; padding: 0; }
+        .auth-footer { margin-top: 20px; font-size: 13px; color: #7f8c8d; }
+        .auth-footer b { color: var(--primary); cursor: pointer; }
+
+        /* Botão Google */
+        .btn-google { background: white; color: #444; border: 2px solid #f1f2f6 !important; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .btn-google img { width: 18px; }
+
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
-        button { flex: 1; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 15px; }
+        button { flex: 1; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 15px; width: 100%; }
         .btn-next { background: var(--primary); color: white; }
         .btn-back { background: #eee; color: #7f8c8d; }
         .btn-add { background: var(--dark); color: white; margin-bottom: 15px; width: 100%; }
 
-        /* Dashboard de Início */
+        /* Dashboard */
         .main-panel { background: var(--dark); color: white; padding: 20px; border-radius: 20px; margin-bottom: 20px; text-align: center; }
         .main-panel .income-val { font-size: 32px; font-weight: 900; margin: 10px 0; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .stat-box { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; font-size: 12px; }
         .stat-box b { display: block; font-size: 16px; }
 
-        /* Configuração de Categorias */
         .rule-item { background: #f9f9f9; padding: 15px; border-radius: 15px; margin-bottom: 10px; border-left: 5px solid var(--primary); }
         .rule-row { display: flex; gap: 10px; align-items: center; }
         .rule-row input { margin-bottom: 0; }
 
-        /* Sugestões de Nomes */
         .suggestions { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; }
         .sug-tag { background: #eee; padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
-        .sug-tag:hover { background: #ddd; }
-
-        /* Lista de Gastos */
         .category-item { background: #fff; border: 1px solid #eee; padding: 12px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* Dashboard de Análise */
-        .summary-card { padding: 18px; border-radius: 20px; margin-bottom: 12px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
+        .summary-card { padding: 18px; border-radius: 20px; margin-bottom: 12px; cursor: pointer; border: 2px solid transparent; }
         .summary-card.over-limit { border-color: var(--danger); background: #fff0f0 !important; color: var(--danger) !important; animation: shake 0.5s; }
         @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
-        .card-header { display: flex; justify-content: space-between; font-size: 11px; text-transform: uppercase; font-weight: 800; }
-        .card-val { font-size: 20px; font-weight: 900; margin: 5px 0; }
-        .card-balance { font-size: 13px; font-weight: 800; margin-top: 4px; }
-        .instruction { font-size: 12px; font-weight: bold; margin-top: 8px; display: none; }
-        .over-limit .instruction { display: block; }
 
-        /* Modal Confirmação */
         #confirmOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
         .confirm-card { background: white; padding: 25px; border-radius: 24px; width: 100%; max-width: 350px; text-align: center; }
-        
         #detailPanel { display: none; margin-top: 15px; padding: 15px; background: #fff; border: 2px solid #f1f2f6; border-radius: 18px; }
+        .item-paid { text-decoration: line-through; opacity: 0.5; }
+        .check-paid { margin-right: 10px; width: 18px !important; height: 18px !important; margin-bottom: 0 !important; }
         
-        /* Estilo do Seletor de Mês */
-        .month-selector { text-align: center; margin-bottom: 20px; }
-        #monthPicker { width: auto; padding: 10px; border: 2px solid var(--primary); font-weight: bold; color: var(--dark); cursor: pointer; }
-
-        /* Estilo para itens pagos */
-        .item-paid { text-decoration: line-through; opacity: 0.5; transition: 0.3s; }
-        .check-paid { margin-right: 10px; width: 18px !important; height: 18px !important; cursor: pointer; margin-bottom: 0 !important; }
+        .user-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 12px; color: #999; }
+        .user-bar span { color: var(--primary); font-weight: bold; }
+        
+        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
     </style>
 </head>
 <body>
@@ -98,12 +96,41 @@
 
 <div class="container">
     
-    <div class="step active" id="step0">
-        <h1>Meu Painel</h1>
-        <span class="subtitle">Resumo Geral Financeiro</span>
+    <div class="step active" id="stepAuth">
+        <div class="auth-container">
+            <div class="logo-area">PRUMO</div>
+            <h1 id="authTitle">Bem-vindo</h1>
+            <span class="subtitle" id="authSubtitle">Gerencie suas finanças com precisão</span>
+            
+            <button class="btn-google" onclick="handleGoogleAuth()">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                Entrar com o Google
+            </button>
 
-        <div class="month-selector">
-            <input type="month" id="monthPicker" onchange="changeMonth(this.value)">
+            <div style="font-size: 12px; color: #ccc; margin-bottom: 20px;">OU USE SEU E-MAIL</div>
+
+            <input type="email" id="authEmail" placeholder="Seu e-mail">
+            <div class="pass-wrapper">
+                <input type="password" id="authPassword" placeholder="Sua senha">
+                <button class="btn-eye" onclick="togglePass()">👁️</button>
+            </div>
+
+            <button class="btn-next" id="btnAuthMain" onclick="handleAuth()">Fazer Login</button>
+            
+            <div class="auth-footer" id="authFooter">
+                Novo por aqui? <b onclick="toggleAuthMode()">Criar uma conta grátis</b>
+            </div>
+        </div>
+    </div>
+
+    <div class="step" id="step0">
+        <div class="user-bar">
+            <div>Usuário: <span id="userName">...</span></div>
+            <div style="cursor:pointer" onclick="handleLogout()">Sair 🚪</div>
+        </div>
+        <h1>Meu Painel</h1>
+        <div class="month-selector" style="text-align: center; margin-bottom: 20px;">
+            <input type="month" id="monthPicker" onchange="changeMonth(this.value)" style="width: auto; padding: 8px; border: 2px solid var(--primary);">
         </div>
         
         <div class="main-panel">
@@ -122,18 +149,11 @@
 
     <div class="step" id="step1">
         <h1>Configurações</h1>
-        <span class="subtitle">Defina sua renda e suas metas (%)</span>
-        
-        <label style="font-size: 12px; font-weight: bold;">Sua Renda Líquida para este Mês</label>
+        <span class="subtitle">Defina sua renda e metas (%)</span>
         <input type="number" id="income" placeholder="Ex: 5000" oninput="saveIncomeToState()">
-
         <div id="rulesList"></div>
         <button class="btn-add" onclick="addRule()">+ Nova Categoria de Meta</button>
-        
-        <div id="percWarning" style="color: var(--danger); font-size: 11px; text-align: center; margin-bottom: 10px; display: none;">
-            Atenção: A soma das porcentagens deve ser 100%!
-        </div>
-
+        <div id="percWarning" style="color: var(--danger); font-size: 11px; text-align: center; display: none;">A soma das porcentagens deve ser 100%!</div>
         <div class="btn-group">
             <button class="btn-back" onclick="prevStep(0)">Início</button>
             <button class="btn-next" onclick="nextStep(3)">Continuar</button>
@@ -142,25 +162,16 @@
 
     <div class="step" id="step3">
         <h1>Registrar Gastos</h1>
-        <span class="subtitle">O que você gastou este mês?</span>
-        
         <div class="suggestions" id="nameSuggestions">
             <div class="sug-tag" onclick="setExpName('Aluguel')">Aluguel</div>
             <div class="sug-tag" onclick="setExpName('Mercado')">Mercado</div>
             <div class="sug-tag" onclick="setExpName('Netflix')">Netflix</div>
-            <div class="sug-tag" onclick="setExpName('Reserva')">Reserva</div>
-            <div class="sug-tag" onclick="setExpName('Lazer')">Lazer</div>
-            <div class="sug-tag" onclick="setExpName('Saúde')">Saúde</div>
         </div>
-
         <input type="text" id="expName" placeholder="Nome do Gasto">
         <input type="number" id="expVal" placeholder="Valor R$">
         <select id="expRule"></select>
-        
         <button class="btn-add" onclick="addExpense()">+ Adicionar Gasto</button>
-
         <div id="expenseList"></div>
-
         <div class="btn-group">
             <button class="btn-back" onclick="prevStep(0)">Início</button>
             <button class="btn-next" onclick="nextStep(4)">Analisar Plano</button>
@@ -169,258 +180,223 @@
 
     <div class="step" id="step4">
         <h1>Onde Diminuir?</h1>
-        <span class="subtitle">Clique nas categorias em vermelho para agir.</span>
-
         <div id="analysisDashboard"></div>
-
         <div id="detailPanel">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <b id="detailTitle" style="font-size: 14px;">Itens</b>
+                <b id="detailTitle">Itens</b>
                 <button onclick="closeDetails()" style="width: auto; padding: 4px 8px; font-size: 10px;">Fechar</button>
             </div>
             <div id="detailList"></div>
         </div>
-
         <div class="btn-group">
             <button class="btn-back" onclick="prevStep(0)">Início</button>
-            <button class="btn-next" onclick="saveAll()">Salvar Plano Mensal</button>
+            <button class="btn-next" onclick="saveAll()">Salvar Plano na Nuvem</button>
         </div>
     </div>
 </div>
 
-<script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    // --- COLE SUAS CHAVES AQUI ---
+    const firebaseConfig = {
+        apiKey: "SUA_API_KEY",
+        authDomain: "seu-projeto.firebaseapp.com",
+        projectId: "seu-projeto",
+        storageBucket: "seu-projeto.appspot.com",
+        messagingSenderId: "SUA_ID",
+        appId: "SUA_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const googleProvider = new GoogleAuthProvider();
+
     // Estado Global
-    let currentMonth = new Date().toISOString().slice(0, 7); // Formato YYYY-MM
-    let income = 0;
-    let rules = [
+    window.currentMonth = new Date().toISOString().slice(0, 7);
+    window.income = 0;
+    window.rules = [
         { id: 1, name: "Essencial", perc: 70, color: "#e1f5fe" },
         { id: 2, name: "Metas/Dívidas", perc: 20, color: "#fff9c4" },
         { id: 3, name: "Estilo de Vida", perc: 10, color: "#e8f5e9" }
     ];
-    let expenses = [];
-    let db = {}; // Banco de dados completo por mês
+    window.expenses = [];
+    window.isLoginMode = true;
+    let currentUser = null;
 
-    let pendingDeleteId = null;
-    let deleteType = null; 
-    let lastOpenedRuleId = null;
+    // --- AUTENTICAÇÃO ---
 
-    function changeMonth(val) {
-        currentMonth = val;
-        loadMonthData();
-        updateUI();
+    window.togglePass = () => {
+        const p = document.getElementById('authPassword');
+        p.type = p.type === 'password' ? 'text' : 'password';
+    };
+
+    window.toggleAuthMode = () => {
+        window.isLoginMode = !window.isLoginMode;
+        document.getElementById('authTitle').innerText = window.isLoginMode ? 'Bem-vindo de volta' : 'Crie sua conta';
+        document.getElementById('btnAuthMain').innerText = window.isLoginMode ? 'Fazer Login' : 'Criar Minha Conta';
+        document.getElementById('authFooter').innerHTML = window.isLoginMode ? 
+            'Novo por aqui? <b onclick="toggleAuthMode()">Criar uma conta grátis</b>' : 
+            'Já tem conta? <b onclick="toggleAuthMode()">Fazer Login</b>';
+    };
+
+    window.handleAuth = async () => {
+        const email = document.getElementById('authEmail').value;
+        const pass = document.getElementById('authPassword').value;
+        if(!email || !pass) return alert("Preencha e-mail e senha!");
+        try {
+            if(window.isLoginMode) await signInWithEmailAndPassword(auth, email, pass);
+            else await createUserWithEmailAndPassword(auth, email, pass);
+        } catch (e) { alert("Erro: " + e.message); }
+    };
+
+    window.handleGoogleAuth = async () => {
+        try {
+            await signInWithPopup(auth, googleProvider);
+        } catch (e) { alert("Erro ao entrar com Google: " + e.message); }
+    };
+
+    window.handleLogout = () => signOut(auth);
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUser = user;
+            document.getElementById('userName').innerText = user.displayName || user.email.split('@')[0];
+            changeStep(0);
+            loadMonthData();
+        } else {
+            currentUser = null;
+            changeStep('Auth');
+        }
+    });
+
+    // --- BANCO DE DADOS (FIRESTORE) ---
+
+    window.saveAll = async () => {
+        if(!currentUser) return;
+        try {
+            const docRef = doc(db, "usuarios", currentUser.uid);
+            const docSnap = await getDoc(docRef);
+            let fullData = docSnap.exists() ? docSnap.data() : {};
+            
+            fullData.globalRules = window.rules;
+            fullData[window.currentMonth] = { income: window.income, expenses: window.expenses };
+
+            await setDoc(docRef, fullData);
+            alert("✅ Sincronizado com a Nuvem!");
+            changeStep(0);
+        } catch (e) { alert("Erro ao salvar."); }
+    };
+
+    window.loadMonthData = async () => {
+        if(!currentUser) return;
+        const docSnap = await getDoc(doc(db, "usuarios", currentUser.uid));
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            window.rules = data.globalRules || window.rules;
+            const monthInfo = data[window.currentMonth] || { income: 0, expenses: [] };
+            window.income = monthInfo.income;
+            window.expenses = monthInfo.expenses;
+        }
+        document.getElementById('income').value = window.income || '';
+        document.getElementById('monthPicker').value = window.currentMonth;
+        updateUI(); renderRules(); renderExpenses();
+    };
+
+    // --- INTERFACE ---
+
+    function changeStep(s) {
+        document.querySelectorAll('.step').forEach(d => d.classList.remove('active'));
+        document.getElementById('step' + s).classList.add('active');
+        window.scrollTo(0,0);
     }
 
-    function loadMonthData() {
-        const stored = JSON.parse(localStorage.getItem('prumoWizardData')) || {};
-        db = stored;
-        
-        if(stored.globalRules) rules = stored.globalRules;
+    window.nextStep = (s) => changeStep(s);
+    window.prevStep = (s) => changeStep(s);
+    window.setExpName = (n) => document.getElementById('expName').value = n;
+    window.saveIncomeToState = () => { window.income = parseFloat(document.getElementById('income').value) || 0; updateUI(); };
+    window.changeMonth = (v) => { window.currentMonth = v; loadMonthData(); };
 
-        const monthInfo = stored[currentMonth] || { income: 0, expenses: [] };
-        income = monthInfo.income;
-        expenses = monthInfo.expenses;
-
-        document.getElementById('income').value = income || '';
-        renderRules();
-        renderExpenses();
-    }
-
-    function saveAll() {
-        db[currentMonth] = { income, expenses };
-        db.globalRules = rules;
-        localStorage.setItem('prumoWizardData', JSON.stringify(db));
-        alert(`Dados de ${currentMonth} salvos com sucesso!`);
-        nextStep(0);
-    }
-
-    function saveIncomeToState() {
-        income = parseFloat(document.getElementById('income').value) || 0;
-        updateUI();
-    }
-
-    function nextStep(step) { changeStep(step); }
-    function prevStep(step) { changeStep(step); }
-
-    function changeStep(step) {
-        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-        document.getElementById(`step${step}`).classList.add('active');
-        updateUI();
-    }
-
-    function renderRules() {
+    window.renderRules = () => {
         const list = document.getElementById('rulesList');
-        list.innerHTML = '';
-        rules.forEach((r, idx) => {
-            list.innerHTML += `
-                <div class="rule-item">
-                    <div class="rule-row">
-                        <input type="text" value="${r.name}" onchange="updateRule(${idx}, 'name', this.value)" style="flex:2">
-                        <input type="number" value="${r.perc}" onchange="updateRule(${idx}, 'perc', this.value)" style="flex:1">
-                        <span style="font-weight:bold">%</span>
-                        <button onclick="askDeleteRule(${idx}, '${r.name}')" style="flex:0; background:none; color:var(--danger); padding:0; font-size: 20px;">×</button>
-                    </div>
-                </div>`;
-        });
-        updateRuleSelect();
-    }
-
-    function addRule() {
-        rules.push({ id: Date.now(), name: "Nova", perc: 0, color: "#f1f2f6" });
-        renderRules();
-    }
-
-    function updateRule(idx, field, val) {
-        rules[idx][field] = field === 'perc' ? parseFloat(val) : val;
-        checkPerc();
-        updateUI();
-    }
-
-    function closeConfirm() { 
-        document.getElementById('confirmOverlay').style.display = 'none'; 
-        pendingDeleteId = null;
-        deleteType = null;
-    }
-
-    function askDeleteRule(idx, text) {
-        pendingDeleteId = idx;
-        deleteType = 'rule';
-        document.getElementById('confirmText').innerText = `Deseja excluir a categoria "${text}"?`;
-        document.getElementById('confirmOverlay').style.display = 'flex';
-        document.getElementById('btnDoDelete').onclick = () => executeDelete();
-    }
-
-    function askDeleteExpense(id, text) {
-        pendingDeleteId = id;
-        deleteType = 'expense';
-        document.getElementById('confirmText').innerText = `Deseja excluir o gasto "${text}"?`;
-        document.getElementById('confirmOverlay').style.display = 'flex';
-        document.getElementById('btnDoDelete').onclick = () => executeDelete();
-    }
-
-    function executeDelete() {
-        if (deleteType === 'rule') {
-            rules.splice(pendingDeleteId, 1);
-            renderRules();
-        } else if (deleteType === 'expense') {
-            expenses = expenses.filter(e => e.id !== pendingDeleteId);
-            renderExpenses();
-            if(document.getElementById('detailPanel').style.display === 'block') {
-                showDetails(lastOpenedRuleId);
-            }
-        }
-        updateUI();
-        closeConfirm();
-    }
-
-    function checkPerc() {
-        const total = rules.reduce((sum, r) => sum + r.perc, 0);
-        document.getElementById('percWarning').style.display = total !== 100 ? 'block' : 'none';
-    }
-
-    function updateRuleSelect() {
-        const sel = document.getElementById('expRule');
-        if(sel) sel.innerHTML = rules.map(r => `<option value="${r.id}">${r.name} (${r.perc}%)</option>`).join('');
-    }
-
-    function setExpName(name) { document.getElementById('expName').value = name; }
-
-    function addExpense() {
-        const name = document.getElementById('expName').value;
-        const val = parseFloat(document.getElementById('expVal').value);
-        const ruleId = document.getElementById('expRule').value;
-        if(!name || !val) return;
-        expenses.push({ id: Date.now(), name, val, ruleId: parseInt(ruleId), paid: false });
-        document.getElementById('expName').value = '';
-        document.getElementById('expVal').value = '';
-        renderExpenses();
-        updateUI();
-    }
-
-    function togglePaid(id) {
-        const expense = expenses.find(e => e.id === id);
-        if (expense) {
-            expense.paid = !expense.paid;
-            renderExpenses();
-            if(document.getElementById('detailPanel').style.display === 'block') {
-                showDetails(lastOpenedRuleId);
-            }
-        }
-    }
-
-    function renderExpenses() {
-        const list = document.getElementById('expenseList');
-        if(!list) return;
-        list.innerHTML = expenses.map(e => {
-            const rule = rules.find(r => r.id === e.ruleId);
-            return `<div class="category-item ${e.paid ? 'item-paid' : ''}">
-                <div style="display:flex; align-items:center">
-                    <input type="checkbox" class="check-paid" ${e.paid ? 'checked' : ''} onclick="togglePaid(${e.id})">
-                    <div><b>${e.name}</b><br><small>${rule ? rule.name : 'Outros'}</small></div>
+        list.innerHTML = window.rules.map((r, i) => `
+            <div class="rule-item">
+                <div class="rule-row">
+                    <input type="text" value="${r.name}" onchange="updateRule(${i},'name',this.value)" style="flex:2">
+                    <input type="number" value="${r.perc}" onchange="updateRule(${i},'perc',this.value)" style="flex:1"> %
                 </div>
-                <div><b>R$ ${e.val.toFixed(2)}</b> <button onclick="askDeleteExpense(${e.id}, '${e.name}')" style="background:none; color:var(--danger); padding:5px; font-size:18px;">×</button></div>
+            </div>`).join('');
+        const sel = document.getElementById('expRule');
+        if(sel) sel.innerHTML = window.rules.map(r => `<option value="${r.id}">${r.name} (${r.perc}%)</option>`).join('');
+    };
+
+    window.updateRule = (i, f, v) => { window.rules[i][f] = f==='perc'?parseFloat(v):v; updateUI(); };
+    window.addRule = () => { window.rules.push({id:Date.now(), name:"Nova", perc:0, color:"#eee"}); renderRules(); };
+
+    window.addExpense = () => {
+        const n = document.getElementById('expName').value;
+        const v = parseFloat(document.getElementById('expVal').value);
+        const r = parseInt(document.getElementById('expRule').value);
+        if(!n || !v) return;
+        window.expenses.push({id:Date.now(), name:n, val:v, ruleId:r, paid:false});
+        document.getElementById('expName').value=''; document.getElementById('expVal').value='';
+        renderExpenses(); updateUI();
+    };
+
+    window.renderExpenses = () => {
+        document.getElementById('expenseList').innerHTML = window.expenses.map(e => {
+            const r = window.rules.find(rule => rule.id === e.ruleId);
+            return `<div class="category-item ${e.paid?'item-paid':''}">
+                <div style="display:flex;align-items:center">
+                    <input type="checkbox" class="check-paid" ${e.paid?'checked':''} onclick="togglePaid(${e.id})">
+                    <div><b>${e.name}</b><br><small>${r?r.name:''}</small></div>
+                </div>
+                <b>R$ ${e.val.toFixed(2)}</b>
             </div>`;
         }).join('');
-    }
+    };
 
-    function updateUI() {
-        const totalSpent = expenses.reduce((sum, e) => sum + e.val, 0);
-        
-        document.getElementById('dashIncome').innerText = income.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-        document.getElementById('dashSpent').innerText = totalSpent.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-        document.getElementById('dashBalance').innerText = (income - totalSpent).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    window.togglePaid = (id) => {
+        const e = window.expenses.find(x => x.id === id);
+        if(e) e.paid = !e.paid;
+        renderExpenses(); updateUI();
+    };
+
+    window.updateUI = () => {
+        const spent = window.expenses.reduce((s, e) => s + e.val, 0);
+        document.getElementById('dashIncome').innerText = window.income.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+        document.getElementById('dashSpent').innerText = spent.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+        document.getElementById('dashBalance').innerText = (window.income - spent).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
         const dash = document.getElementById('analysisDashboard');
         if(!dash) return;
-        dash.innerHTML = '';
-        
-        rules.forEach(r => {
-            const limit = income * (r.perc / 100);
-            const spent = expenses.filter(e => e.ruleId === r.id).reduce((sum, e) => sum + e.val, 0);
-            const balance = limit - spent;
-            const isOver = spent > limit;
-            
-            dash.innerHTML += `
-                <div class="summary-card ${isOver ? 'over-limit' : ''}" style="background: ${r.color || '#f1f2f6'}" onclick="showDetails(${r.id})">
-                    <div class="card-header"><span>${r.name} (${r.perc}%)</span> <span>Limite: R$ ${limit.toFixed(2)}</span></div>
-                    <div class="card-val">Gasto: R$ ${spent.toFixed(2)} ${isOver ? '⚠️' : ''}</div>
-                    <div class="card-balance" style="color: ${isOver ? 'var(--danger)' : 'var(--success)'}">
-                        Saldo: R$ ${balance.toFixed(2)}
-                    </div>
-                    <div class="instruction">🔴 Atenção: Corte gastos nesta categoria!</div>
-                </div>`;
-        });
-    }
-
-    function showDetails(ruleId) {
-        lastOpenedRuleId = ruleId;
-        const panel = document.getElementById('detailPanel');
-        const list = document.getElementById('detailList');
-        const rule = rules.find(r => r.id === ruleId);
-        if(!rule) return closeDetails();
-        
-        const filtered = expenses.filter(e => e.ruleId === ruleId);
-
-        panel.style.display = 'block';
-        document.getElementById('detailTitle').innerText = `Itens em ${rule.name}`;
-        list.innerHTML = filtered.map(e => `
-            <div class="detail-item ${e.paid ? 'item-paid' : ''}" style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #eee; font-size:13px">
-                <div style="display:flex; align-items:center">
-                    <input type="checkbox" class="check-paid" ${e.paid ? 'checked' : ''} onclick="togglePaid(${e.id})">
-                    <span>${e.name}</span>
-                </div>
-                <div><b>R$ ${e.val.toFixed(2)}</b> <button onclick="askDeleteExpense(${e.id}, '${e.name}')" style="background:none; color:var(--danger); padding:0 5px; font-size:16px">×</button></div>
-            </div>
-        `).join('') || '<p style="font-size:12px; color:#999">Nenhum gasto registrado nesta categoria.</p>';
-        panel.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function closeDetails() { document.getElementById('detailPanel').style.display = 'none'; }
-
-    window.onload = () => {
-        document.getElementById('monthPicker').value = currentMonth;
-        loadMonthData();
-        updateUI();
+        dash.innerHTML = window.rules.map(r => {
+            const lim = window.income * (r.perc/100);
+            const g = window.expenses.filter(e => e.ruleId === r.id).reduce((s, e) => s + e.val, 0);
+            const over = g > lim;
+            return `<div class="summary-card ${over?'over-limit':''}" style="background:${r.color}" onclick="showDetails(${r.id})">
+                <div style="display:flex;justify-content:space-between;font-size:10px"><b>${r.name}</b> <span>LIM: R$ ${lim.toFixed(2)}</span></div>
+                <div style="font-size:20px;font-weight:900">R$ ${g.toFixed(2)}</div>
+                <div style="font-size:12px;color:${over?'var(--danger)':'var(--success)'}">Saldo: R$ ${(lim-g).toFixed(2)}</div>
+            </div>`;
+        }).join('');
     };
+
+    window.showDetails = (id) => {
+        const r = window.rules.find(x => x.id === id);
+        const filtered = window.expenses.filter(e => e.ruleId === id);
+        document.getElementById('detailPanel').style.display = 'block';
+        document.getElementById('detailTitle').innerText = r.name;
+        document.getElementById('detailList').innerHTML = filtered.map(e => `
+            <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #eee;">
+                <span>${e.name}</span><b>R$ ${e.val.toFixed(2)}</b>
+            </div>`).join('') || 'Nenhum gasto.';
+    };
+    window.closeDetails = () => document.getElementById('detailPanel').style.display = 'none';
+
 </script>
 </body>
 </html>
