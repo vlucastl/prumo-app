@@ -33,15 +33,21 @@
         input:focus { border-color: var(--primary); background: white; }
 
         /* Estilização dos Sliders */
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 15px 0; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; }
         input[type=range]:focus { outline: none; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; background: #e1f5fe; border-radius: 10px; }
         input[type=range]::-webkit-slider-thumb { height: 24px; width: 24px; border-radius: 50%; background: var(--primary); cursor: pointer; -webkit-appearance: none; margin-top: -8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         
-        .rule-item { background: #fdfdfd; padding: 15px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 10px; }
-        .rule-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 14px; }
+        .rule-item { background: #fdfdfd; padding: 15px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 15px; position: relative; }
+        .rule-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 14px; margin-bottom: 5px; }
+        
+        /* Controles de Ajuste Fino e Exclusão */
+        .rule-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; background: #f1f2f6; border-radius: 8px; padding: 5px 10px; }
+        .btn-adjust { background: white; border: 1px solid #ddd; border-radius: 5px; width: 30px; height: 30px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .btn-adjust:active { background: #eee; transform: scale(0.9); }
+        .btn-del-rule { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 16px; padding: 5px; opacity: 0.7; transition: 0.3s; }
+        .btn-del-rule:hover { opacity: 1; transform: scale(1.1); }
 
-        /* Estilos da Validação */
         .total-warning { color: var(--danger); font-size: 12px; margin-top: 5px; font-weight: bold; display: none; text-align: center; }
         .total-ok { color: var(--success) !important; }
 
@@ -146,7 +152,7 @@
                 <b>% Total Alocada</b>
                 <span id="totalPercentageLabel" style="font-size: 20px; font-weight: 900;">0%</span>
             </div>
-            <div id="totalWarning" class="total-warning">Os percentuais devem somar exatamente 100%</div>
+            <div id="totalWarning" class="total-warning">A soma deve ser exatamente 100%</div>
         </div>
 
         <button class="btn-add" onclick="addRule()">+ Nova Categoria</button>
@@ -297,7 +303,7 @@
     window.saveIncomeToState = () => { window.income = parseFloat(document.getElementById('income').value) || 0; updateUI(); };
     window.changeMonth = (v) => { window.currentMonth = v; loadMonthData(); };
 
-    // --- LOGICA DE CATEGORIAS (SLIDERS ESTILO VÍDEO) ---
+    // --- LOGICA DE CATEGORIAS ---
     window.renderRules = () => {
         const list = document.getElementById('rulesList');
         const totalUsado = window.rules.reduce((acc, r) => acc + r.perc, 0);
@@ -306,14 +312,12 @@
         const btnNext = document.getElementById('btnContinueStep1');
 
         label.innerText = totalUsado + "%";
-
         if(totalUsado !== 100) {
-            label.classList.remove('total-ok');
             label.style.color = 'var(--danger)';
             warning.style.display = 'block';
             btnNext.style.opacity = '0.5';
         } else {
-            label.classList.add('total-ok');
+            label.style.color = 'var(--success)';
             warning.style.display = 'none';
             btnNext.style.opacity = '1';
         }
@@ -321,9 +325,16 @@
         list.innerHTML = window.rules.map((r, i) => `
             <div class="rule-item">
                 <div class="rule-header">
-                    <input type="text" value="${r.name}" onchange="updateRule(${i},'name',this.value)" style="border:none; background:transparent; font-weight:bold; width:60%; margin-bottom:0; padding:5px">
-                    <span style="color:var(--primary)">${r.perc}%</span>
+                    <input type="text" value="${r.name}" onchange="updateRule(${i},'name',this.value)" style="border:none; background:transparent; font-weight:bold; width:60%; margin-bottom:0; padding:5px; font-size:16px">
+                    <button class="btn-del-rule" onclick="removeRule(${i})">🗑️</button>
                 </div>
+                
+                <div class="rule-controls">
+                    <button class="btn-adjust" onclick="adjustRule(${i}, -1)">❮</button>
+                    <span style="font-weight:900; color:var(--dark); font-size:18px">${r.perc}%</span>
+                    <button class="btn-adjust" onclick="adjustRule(${i}, 1)">❯</button>
+                </div>
+
                 <input type="range" min="0" max="100" value="${r.perc}" 
                        oninput="updateRule(${i},'perc',this.value)">
             </div>`).join('');
@@ -339,10 +350,27 @@
         updateUI(); 
     };
 
+    window.adjustRule = (i, delta) => {
+        let newVal = window.rules[i].perc + delta;
+        if(newVal >= 0 && newVal <= 100) {
+            window.rules[i].perc = newVal;
+            renderRules();
+            updateUI();
+        }
+    };
+
+    window.removeRule = (i) => {
+        if(confirm(`Tem certeza que deseja excluir a categoria "${window.rules[i].name}"?`)) {
+            window.rules.splice(i, 1);
+            renderRules();
+            updateUI();
+        }
+    };
+
     window.validateAndNext = (step) => {
         const total = window.rules.reduce((acc, r) => acc + r.perc, 0);
         if(total !== 100) {
-            alert("⚠️ A soma das porcentagens é " + total + "%. Ajuste para exatamente 100% para continuar.");
+            alert(`Atenção: A soma atual é ${total}%. Ajuste para 100% para continuar.`);
             return;
         }
         nextStep(step);
