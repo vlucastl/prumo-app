@@ -219,7 +219,30 @@
     ];
     window.expenses = [];
     window.isLoginMode = true;
+    window.currentDetailId = null;
     let currentUser = null;
+
+    // --- FUNÇÕES DE NAVEGAÇÃO E HISTÓRICO ---
+    function changeStep(s, pushHistory = true) {
+        document.querySelectorAll('.step').forEach(d => d.classList.remove('active'));
+        const target = document.getElementById('step' + s);
+        if(target) target.classList.add('active');
+        window.scrollTo(0,0);
+        if (pushHistory) {
+            history.pushState({ step: s }, `Step ${s}`, "");
+        }
+    }
+
+    window.onpopstate = (event) => {
+        if (event.state && event.state.step !== undefined) {
+            changeStep(event.state.step, false);
+        } else {
+            changeStep(currentUser ? 0 : 'Auth', false);
+        }
+    };
+
+    window.nextStep = (s) => changeStep(s);
+    window.prevStep = (s) => changeStep(s);
 
     // --- FUNÇÕES DE AUTH ---
     window.togglePass = () => {
@@ -254,16 +277,17 @@
             currentUser = user;
             document.getElementById('userName').innerText = user.displayName || user.email.split('@')[0];
             changeStep(0);
+            history.replaceState({step: 0}, "Dashboard", "");
             await loadMonthData();
         } else {
             try { await getRedirectResult(auth); } catch (e) { console.error(e); }
             currentUser = null;
-            changeStep('Auth');
+            changeStep('Auth', false);
         }
     });
 
     // --- FUNÇÕES DE DADOS ---
-    window.saveAll = async () => {
+    window.saveAll = async (silent = false) => {
         if(!currentUser) return;
         try {
             const docRef = doc(db, "usuarios", currentUser.uid);
@@ -272,9 +296,11 @@
             fullData.globalRules = window.rules;
             fullData[window.currentMonth] = { income: window.income, expenses: window.expenses };
             await setDoc(docRef, fullData);
-            alert("✅ Tudo salvo na nuvem!");
-            changeStep(0);
-        } catch (e) { alert("Erro ao salvar."); }
+            if(!silent) alert("✅ Tudo salvo na nuvem!");
+        } catch (e) { 
+            console.error(e);
+            if(!silent) alert("Erro ao salvar."); 
+        }
     };
 
     window.loadMonthData = async () => {
@@ -292,14 +318,6 @@
         updateUI(); renderRules(); renderExpenses();
     };
 
-    // --- FUNÇÕES DE INTERFACE ---
-    function changeStep(s) {
-        document.querySelectorAll('.step').forEach(d => d.classList.remove('active'));
-        document.getElementById('step' + s).classList.add('active');
-        window.scrollTo(0,0);
-    }
-    window.nextStep = (s) => changeStep(s);
-    window.prevStep = (s) => changeStep(s);
     window.saveIncomeToState = () => { window.income = parseFloat(document.getElementById('income').value) || 0; updateUI(); };
     window.changeMonth = (v) => { window.currentMonth = v; loadMonthData(); };
 
@@ -364,6 +382,7 @@
             window.rules.splice(i, 1);
             renderRules();
             updateUI();
+            saveAll(true);
         }
     };
 
@@ -388,7 +407,9 @@
         if(!n || !v) return;
         window.expenses.push({id:Date.now(), name:n, val:v, ruleId:r, paid:false});
         document.getElementById('expName').value=''; document.getElementById('expVal').value='';
-        renderExpenses(); updateUI();
+        renderExpenses(); 
+        updateUI();
+        saveAll(true);
     };
 
     window.renderExpenses = () => {
@@ -407,7 +428,9 @@
     window.togglePaid = (id) => {
         const e = window.expenses.find(x => x.id === id);
         if(e) e.paid = !e.paid;
-        renderExpenses(); updateUI();
+        renderExpenses(); 
+        updateUI();
+        saveAll(true);
     };
 
     window.updateUI = () => {
@@ -431,16 +454,35 @@
     };
 
     window.showDetails = (id) => {
+        window.currentDetailId = id;
         const r = window.rules.find(x => x.id === id);
         const filtered = window.expenses.filter(e => e.ruleId === id);
         document.getElementById('detailPanel').style.display = 'block';
         document.getElementById('detailTitle').innerText = r.name;
         document.getElementById('detailList').innerHTML = filtered.map(e => `
-            <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #eee;">
-                <span>${e.name}</span><b>R$ ${e.val.toFixed(2)}</b>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #eee;">
+                <span>${e.name}</span>
+                <div style="display:flex; align-items:center; gap:10px">
+                    <b>R$ ${e.val.toFixed(2)}</b>
+                    <button onclick="deleteExpense(${e.id})" style="background:none; border:none; cursor:pointer; color:var(--danger); font-size:16px">🗑️</button>
+                </div>
             </div>`).join('') || 'Nenhum gasto.';
     };
-    window.closeDetails = () => document.getElementById('detailPanel').style.display = 'none';
+
+    window.deleteExpense = (id) => {
+        if (confirm("Tem certeza que deseja excluir este gasto?")) {
+            window.expenses = window.expenses.filter(e => e.id !== id);
+            renderExpenses(); 
+            updateUI();
+            if (window.currentDetailId) showDetails(window.currentDetailId);
+            saveAll(true); 
+        }
+    };
+
+    window.closeDetails = () => {
+        document.getElementById('detailPanel').style.display = 'none';
+        window.currentDetailId = null;
+    };
 
 </script>
 </body>
